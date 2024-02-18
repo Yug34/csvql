@@ -4,22 +4,22 @@ import alasql from "alasql";
 import {DATA_FILES} from "./constants.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {useTablesStore} from "@/store/tablesStore.ts";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import uniqid from "uniqid";
+import {ResultsDataTable} from "@/components/ResultsDataTable.tsx";
+import {Toaster} from "@/components/ui/sonner.tsx";
+import {useAlasqlStore} from "@/store/alasqlStore.ts";
+import {SQLEditor} from "@/components/SQLEditor.tsx";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
-    const [query, setQuery] = useState<null | string>(null);
     const {addTable, tables} = useTablesStore();
+    const {query, setQuery} = useAlasqlStore();
     const [data, setData] = useState<Record<string, string>[] | null>(null);
+
+    useEffect(() => {
+        if (data !== null) {
+            setIsLoaded(true);
+        }
+    }, [data]);
 
     useEffect(() => {
         Promise.all(DATA_FILES.map(async ({fileName, tableName}) => {
@@ -29,9 +29,9 @@ const App = () => {
             await alasql.promise(`INSERT INTO ${tableName} SELECT * FROM CSV(?, {headers: true, separator:","});`, [csvData]);
             addTable(tableName);
         })).then(() => {
-            setIsLoaded(true)
-            // setQuery(`SELECT * FROM categories`)
-            setData(alasql(`SELECT * FROM employees`));
+            const query = `SELECT * FROM employees`;
+            setQuery(query);
+            setData(alasql(query));
         });
     }, []);
 
@@ -39,6 +39,7 @@ const App = () => {
         <div>
             {isLoaded ? (
                 <>
+                    <SQLEditor/>
                     {tables.map((tab) => (
                         <div key={tab}>{tab}</div>
                     ))}
@@ -61,32 +62,18 @@ const App = () => {
                     }}>
                         join query
                     </Button>
-                    <Table>
-                        <TableCaption>{query}</TableCaption>
-                        <TableHeader>
-                            <TableRow>
-                                {Object.keys(data![0]).map(key => (
-                                    <TableHead key={key}>{key}</TableHead>
-                                ))}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {data!.map((row: Record<string, string>) => {
-                                const id = uniqid();
-                                return (
-                                    <TableRow key={id}>
-                                        {Object.keys(row).map((key) => (
-                                            <TableCell key={id+key} className="text-left">{row[key]}</TableCell>
-                                        ))}
-                                    </TableRow>
-                                )
-                            })}
-                        </TableBody>
-                    </Table>
+                    <ResultsDataTable
+                        columns={Object.keys(data![0]).map(key => ({
+                            accessorKey: key,
+                            header: key,
+                        }))}
+                        data={data!}
+                    />
                 </>
             ) : (
                 <div>Not yet Loaded</div>
             )}
+            <Toaster />
         </div>
     )
 }
