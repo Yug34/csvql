@@ -2,6 +2,7 @@ import './App.css'
 import {useEffect, useState} from "react";
 import alasql from "alasql";
 import {DATA_FILES} from "./constants.ts";
+import {Button} from "@/components/ui/button.tsx";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -22,29 +23,30 @@ const App = () => {
     return (
         <div>
             {isLoaded ? (
-                <div>Loaded</div>
-            ) : (
-                <div>Not yet Loaded</div>
-            )}
-            <button onClick={() => {
-                console.log(alasql(`SELECT * FROM categories`))
-            }}>
-                categories
-            </button>
-            <button onClick={() => {
-                console.log(alasql(`SELECT * FROM products WHERE `))
-            }}>
-                products
-            </button>
-            <button onClick={() => {
-                console.log(alasql(`SELECT t.territoryDescription
+                <>
+                    <Button onClick={() => {
+                        console.log(alasql(`SELECT * FROM categories`))
+                    }}>
+                        categories
+                    </Button>
+                    <Button onClick={() => {
+                        console.log(alasql(`SELECT * FROM products WHERE `))
+                    }}>
+                        products
+                    </Button>
+                    <Button onClick={() => {
+                        console.log(alasql(`SELECT t.territoryDescription
                                     FROM territories t
                                     JOIN employee_territories et ON t.territoryID = et.territoryID
                                     WHERE et.employeeID = 2;
                                     `))
-            }}>
-                join query
-            </button>
+                    }}>
+                        join query
+                    </Button>
+                </>
+            ) : (
+                <div>Not yet Loaded</div>
+            )}
         </div>
     )
 }
