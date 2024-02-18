@@ -8,12 +8,12 @@ export const SQLEditor = () => {
 
     return (
         <AceEditor
+            style={{width: "100%", height: "100%"}}
             fontSize={"18px"}
             className="editorInput"
             placeholder="Enter SQL Query here"
             mode="sql"
             theme="github"
-            name="blah2"
             showPrintMargin={true}
             showGutter={true}
             highlightActiveLine={true}
