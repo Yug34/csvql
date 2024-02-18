@@ -9,17 +9,17 @@ import {
     TableBody,
     TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import uniqid from "uniqid";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [query, setQuery] = useState<null | string>(null);
     const {addTable, tables} = useTablesStore();
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<Record<string, string>[] | null>(null);
 
     useEffect(() => {
         Promise.all(DATA_FILES.map(async ({fileName, tableName}) => {
@@ -31,7 +31,7 @@ const App = () => {
         })).then(() => {
             setIsLoaded(true)
             // setQuery(`SELECT * FROM categories`)
-            setData(alasql(`SELECT * FROM categories`))
+            setData(alasql(`SELECT * FROM employees`));
         });
     }, []);
 
@@ -65,20 +65,22 @@ const App = () => {
                         <TableCaption>{query}</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                {Object.keys(data[0]).map(key => (
+                                {Object.keys(data![0]).map(key => (
                                     <TableHead key={key}>{key}</TableHead>
                                 ))}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {data.map(({categoryID, categoryName, description, picture}) => (
-                                <TableRow key={categoryID}>
-                                    <TableCell className="font-medium">{categoryID}</TableCell>
-                                    <TableCell className="text-left">{categoryName}</TableCell>
-                                    <TableCell className="text-left">{description}</TableCell>
-                                    <TableCell className="text-right">{picture}</TableCell>
-                                </TableRow>
-                            ))}
+                            {data!.map((row: Record<string, string>) => {
+                                const id = uniqid();
+                                return (
+                                    <TableRow key={id}>
+                                        {Object.keys(row).map((key) => (
+                                            <TableCell key={id+key} className="text-left">{row[key]}</TableCell>
+                                        ))}
+                                    </TableRow>
+                                )
+                            })}
                         </TableBody>
                     </Table>
                 </>
