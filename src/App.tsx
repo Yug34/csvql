@@ -8,6 +8,7 @@ import {Toaster} from "@/components/ui/sonner.tsx";
 import {useAlasqlStore} from "@/store/alasqlStore.ts";
 import {SQLEditor} from "@/components/SQLEditor.tsx";
 import {ThemeProvider} from "@/components/theme-provider.tsx";
+import Navbar from "@/components/Navbar.tsx";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -38,6 +39,7 @@ const App = () => {
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <div className={"p-4 w-screen h-screen max-w-screen max-h-screen flex flex-col overflow-x-hidden"}>
+                <Navbar/>
                 {isLoaded ? (
                     <div className={"flex flex-col gap-y-6 w-full h-full max-h-full max-w-full"}>
                         {/*<Button onClick={() => {*/}
