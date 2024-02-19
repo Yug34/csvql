@@ -1,10 +1,13 @@
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-sql";
 import "ace-builds/src-noconflict/theme-github.js";
+import "ace-builds/src-noconflict/theme-twilight.js";
 import {useAlasqlStore} from "@/store/alasqlStore.ts";
+import {useTheme} from "@/components/theme-provider.tsx";
 
 export const SQLEditor = () => {
     const {query, setQuery} = useAlasqlStore();
+    const { theme } = useTheme();
 
     return (
         <AceEditor
@@ -13,7 +16,7 @@ export const SQLEditor = () => {
             className="editorInput"
             placeholder="Enter SQL Query here"
             mode="sql"
-            theme="github"
+            theme={theme === "dark" ? "twilight" : "github"}
             showPrintMargin={true}
             showGutter={true}
             highlightActiveLine={true}
