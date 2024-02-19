@@ -25,8 +25,6 @@ export const SQLEditor = () => {
             }}
             value={query ?? ""}
             setOptions={{
-                enableBasicAutocompletion: true,
-                enableLiveAutocompletion: true,
                 showLineNumbers: true,
                 wrap: true,
                 hScrollBarAlwaysVisible: false,

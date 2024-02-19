@@ -9,12 +9,32 @@ import {useAlasqlStore} from "@/store/alasqlStore.ts";
 import {SQLEditor} from "@/components/SQLEditor.tsx";
 import {ThemeProvider} from "@/components/theme-provider.tsx";
 import Navbar from "@/components/Navbar.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {toast} from "sonner";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const {addTable} = useTablesStore();
-    const {setQuery} = useAlasqlStore();
-    const [data, setData] = useState<Record<string, string>[] | null>(null);
+    const {query, setQuery, data, setData, setQueryError, queryError} = useAlasqlStore();
+
+    useEffect(() => {
+        console.log(queryError);
+    }, [queryError]);
+
+    const executeQuery = () => {
+        console.log(query)
+
+        alasql.promise(query)
+            .then((data: Record<string, string>[]) => {
+                if (data) {
+                    setData(data);
+                    setQueryError(null);
+                }
+            })
+            .catch((err: {message: string}) => {
+                toast.error(err.message);
+            });
+    }
 
     useEffect(() => {
         if (data !== null) {
@@ -42,6 +62,9 @@ const App = () => {
                 <Navbar/>
                 {isLoaded ? (
                     <div className={"flex flex-col gap-y-6 w-full h-full max-h-full max-w-full"}>
+                        <Button onClick={executeQuery}>
+                            Run query
+                        </Button>
                         {/*<Button onClick={() => {*/}
                         {/*    console.log(alasql(`SELECT t.territoryDescription*/}
                         {/*                FROM territories t*/}
@@ -69,7 +92,7 @@ const App = () => {
                 ) : (
                     <div>Not yet Loaded</div>
                 )}
-                <Toaster />
+                <Toaster richColors />
             </div>
         </ThemeProvider>
     )
