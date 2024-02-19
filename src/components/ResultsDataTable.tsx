@@ -26,6 +26,9 @@ import {copyTextToClipboard} from "@/lib/utils.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
 import {ScrollBar, ScrollArea} from "@/components/ui/scroll-area.tsx";
+import {useTablesStore} from "@/store/tablesStore.ts";
+import {useAlasqlStore} from "@/store/alasqlStore.ts";
+import alasql from "alasql";
 
 interface ResultsDataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -44,11 +47,30 @@ export function ResultsDataTable<TData, TValue>({
         initialState: {
             pagination: {pageSize: 30}
         }
-    })
+    });
+
+    const {tables} = useTablesStore();
+    const {setQuery, setData} = useAlasqlStore();
 
     return (
         <div className="rounded-md border max-h-full w-full max-w-screen">
             <div className="flex items-center justify-end space-x-2">
+                <ScrollArea className={"mr-auto"}>
+                    {tables.map((table, index) => (
+                        <Button
+                            variant={"ghost"}
+                            className={`rounded-none ${index === 0 && "rounded-tl-md"}`}
+                            key={table}
+                            onClick={() => {
+                                const query = `SELECT * FROM ${table}`
+                                setQuery(query);
+                                setData(alasql(query));
+                            }}
+                        >
+                            {table}
+                        </Button>
+                    ))}
+                </ScrollArea>
                 <Button
                     variant="outline"
                     size="sm"
@@ -102,7 +124,8 @@ export function ResultsDataTable<TData, TValue>({
                                                 <HoverCardTrigger>
                                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </HoverCardTrigger>
-                                                <HoverCardContent className={"flex gap-x-2 w-fit max-w-[600px] truncate"}>
+                                                <HoverCardContent
+                                                    className={"flex gap-x-2 w-fit max-w-[600px] truncate"}>
                                                     {cell.getContext().getValue() as ReactNode}
                                                     <CopyIcon
                                                         className={"cursor-pointer"}
@@ -126,7 +149,7 @@ export function ResultsDataTable<TData, TValue>({
                         )}
                     </TableBody>
                 </Table>
-                <ScrollBar orientation="horizontal" />
+                <ScrollBar orientation="horizontal"/>
             </ScrollArea>
         </div>
     )
