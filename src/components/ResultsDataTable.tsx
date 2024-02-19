@@ -50,7 +50,7 @@ export function ResultsDataTable<TData, TValue>({
     });
 
     const {tables} = useTablesStore();
-    const {setQuery, setData} = useAlasqlStore();
+    const {setQuery, setData, query} = useAlasqlStore();
 
     return (
         <div className="rounded-md border max-h-full w-full max-w-screen">
@@ -68,7 +68,7 @@ export function ResultsDataTable<TData, TValue>({
                     {tables.map(table => (
                         <Button
                             variant={"ghost"}
-                            className={"rounded-none"}
+                            className={`rounded-none ${query!.includes(`SELECT * FROM ${table}`) && "font-semibold underline underline-offset-4"}`}
                             key={table}
                             onClick={() => {
                                 const query = `SELECT * FROM ${table}`
@@ -134,7 +134,7 @@ export function ResultsDataTable<TData, TValue>({
                                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </HoverCardTrigger>
                                                 <HoverCardContent
-                                                    className={"cursor-pointer flex gap-x-2 w-fit max-w-[600px] truncate"}
+                                                    className={`cursor-pointer flex gap-x-2 w-fit max-w-[600px] truncate`}
                                                     onClick={() => {
                                                         copyTextToClipboard(cell.getContext().getValue() as string)
                                                         toast.success("Copied to clipboard!")
