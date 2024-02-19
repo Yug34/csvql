@@ -25,6 +25,7 @@ import {CopyIcon} from "lucide-react";
 import {toast} from "sonner";
 import {copyTextToClipboard} from "@/lib/utils.ts";
 import {Button} from "@/components/ui/button.tsx";
+import {Separator} from "@/components/ui/separator.tsx";
 
 interface ResultsDataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -40,10 +41,34 @@ export function ResultsDataTable<TData, TValue>({
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        initialState: {
+            pagination:{pageSize: 30}
+        }
     })
 
     return (
         <div className="rounded-md border max-h-full w-full max-w-screen">
+            <div className="flex items-center justify-end space-x-2">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                >
+                    Previous
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                >
+                    Next
+                </Button>
+            </div>
+
+            <Separator/>
+
             <Table className={"w-full overflow-auto"}>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -100,24 +125,6 @@ export function ResultsDataTable<TData, TValue>({
                     )}
                 </TableBody>
             </Table>
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    Previous
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    Next
-                </Button>
-            </div>
         </div>
     )
 }

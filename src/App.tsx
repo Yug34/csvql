@@ -29,6 +29,7 @@ const App = () => {
                 if (data) {
                     setData(data);
                     setQueryError(null);
+                    toast.success("Query executed!");
                 }
             })
             .catch((err: {message: string}) => {
@@ -58,13 +59,14 @@ const App = () => {
 
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <div className={"w-screen h-screen max-w-screen max-h-screen flex flex-col overflow-x-hidden"}>
+            <div className={"w-screen h-screen flex flex-col overflow-x-hidden"}>
                 <Navbar/>
                 {isLoaded ? (
                     <div className={"p-4 flex flex-col gap-y-6 w-full h-full max-h-full max-w-full"}>
                         <Button onClick={executeQuery}>
                             Run query
                         </Button>
+
                         {/*<Button onClick={() => {*/}
                         {/*    console.log(alasql(`SELECT t.territoryDescription*/}
                         {/*                FROM territories t*/}
