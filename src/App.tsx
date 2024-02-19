@@ -15,15 +15,9 @@ import {toast} from "sonner";
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const {addTable} = useTablesStore();
-    const {query, setQuery, data, setData, setQueryError, queryError} = useAlasqlStore();
-
-    useEffect(() => {
-        console.log(queryError);
-    }, [queryError]);
+    const {query, setQuery, data, setData, setQueryError} = useAlasqlStore();
 
     const executeQuery = () => {
-        console.log(query)
-
         alasql.promise(query)
             .then((data: Record<string, string>[]) => {
                 if (data) {

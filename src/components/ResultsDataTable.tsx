@@ -6,7 +6,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-
 import {
     ColumnDef,
     flexRender,
@@ -26,6 +25,7 @@ import {toast} from "sonner";
 import {copyTextToClipboard} from "@/lib/utils.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
+import {ScrollBar, ScrollArea} from "@/components/ui/scroll-area.tsx";
 
 interface ResultsDataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -42,7 +42,7 @@ export function ResultsDataTable<TData, TValue>({
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         initialState: {
-            pagination:{pageSize: 30}
+            pagination: {pageSize: 30}
         }
     })
 
@@ -69,62 +69,65 @@ export function ResultsDataTable<TData, TValue>({
 
             <Separator/>
 
-            <Table className={"w-full overflow-auto"}>
-                <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                    <TableHead key={header.id}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                )
-                            })}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
-                                        <HoverCard>
-                                            <HoverCardTrigger>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </HoverCardTrigger>
-                                            <HoverCardContent className={"flex gap-x-2 w-fit max-w-[600px] truncate"}>
-                                                {cell.getContext().getValue() as ReactNode}
-                                                <CopyIcon
-                                                    className={"cursor-pointer"}
-                                                    onClick={() => {
-                                                        copyTextToClipboard(cell.getContext().getValue() as string)
-                                                        toast.success("Copied to clipboard!")
-                                                    }}
-                                                />
-                                            </HoverCardContent>
-                                        </HoverCard>
-                                    </TableCell>
-                                ))}
+            <ScrollArea className="w-full whitespace-nowrap">
+                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <TableHead key={header.id}>
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                        </TableHead>
+                                    )
+                                })}
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No results.
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            <HoverCard>
+                                                <HoverCardTrigger>
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </HoverCardTrigger>
+                                                <HoverCardContent className={"flex gap-x-2 w-fit max-w-[600px] truncate"}>
+                                                    {cell.getContext().getValue() as ReactNode}
+                                                    <CopyIcon
+                                                        className={"cursor-pointer"}
+                                                        onClick={() => {
+                                                            copyTextToClipboard(cell.getContext().getValue() as string)
+                                                            toast.success("Copied to clipboard!")
+                                                        }}
+                                                    />
+                                                </HoverCardContent>
+                                            </HoverCard>
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+                <ScrollBar orientation="horizontal" />
+            </ScrollArea>
         </div>
     )
 }
