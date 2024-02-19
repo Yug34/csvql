@@ -15,7 +15,7 @@ import {toast} from "sonner";
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const {addTable} = useTablesStore();
-    const {query, setQuery, data, setData, setQueryError} = useAlasqlStore();
+    const {query, setQuery, data, setData, setQueryError, addPreviousQueries} = useAlasqlStore();
 
     const executeQuery = () => {
         alasql.promise(query)
@@ -24,6 +24,7 @@ const App = () => {
                     setData(data);
                     setQueryError(null);
                     toast.success("Query executed!");
+                    addPreviousQueries(query!);
                 }
             })
             .catch((err: {message: string}) => {
@@ -57,9 +58,7 @@ const App = () => {
                 <Navbar/>
                 {isLoaded ? (
                     <div className={"p-4 flex flex-col gap-y-6 w-full h-full max-h-full max-w-full"}>
-                        <Button onClick={executeQuery}>
-                            Run query
-                        </Button>
+                        <Button onClick={executeQuery}>Run query</Button>
 
                         {/*<Button onClick={() => {*/}
                         {/*    console.log(alasql(`SELECT t.territoryDescription*/}

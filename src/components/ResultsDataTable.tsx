@@ -65,23 +65,25 @@ export function ResultsDataTable<TData, TValue>({
                         </HoverCardContent>
                     </HoverCard>
 
-                    {tables.map(table => (
-                        <Button
-                            variant={"ghost"}
-                            className={`rounded-none ${query!.includes(`SELECT * FROM ${table}`) && "font-semibold underline underline-offset-4"}`}
-                            key={table}
-                            onClick={() => {
-                                const query = `SELECT * FROM ${table}`
-                                setQuery(query);
-                                setData(alasql(query));
-                            }}
-                        >
-                            {table}
-                        </Button>
-                    ))}
+                    {tables.map(table => {
+                        const isTableInQuery = query!.includes(table);
+                        return (
+                            <Button
+                                variant={"ghost"}
+                                className={`rounded-none ${isTableInQuery && "font-semibold underline underline-offset-4"}`}
+                                key={table}
+                                onClick={() => {
+                                    const query = `SELECT * FROM ${table}`
+                                    setQuery(query);
+                                    setData(alasql(query));
+                                }}
+                            >
+                                {table}
+                            </Button>
+                        )
+                    })}
                 </ScrollArea>
                 <Button
-                    variant="outline"
                     size="sm"
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
@@ -89,7 +91,6 @@ export function ResultsDataTable<TData, TValue>({
                     Previous
                 </Button>
                 <Button
-                    variant="outline"
                     size="sm"
                     onClick={() => table.nextPage()}
                     disabled={!table.getCanNextPage()}
