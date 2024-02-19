@@ -20,7 +20,7 @@ import {
     HoverCardContent
 } from "@/components/ui/hover-card.tsx";
 import {ReactNode} from "react";
-import {CopyIcon} from "lucide-react";
+import {CopyIcon, InfoIcon} from "lucide-react";
 import {toast} from "sonner";
 import {copyTextToClipboard} from "@/lib/utils.ts";
 import {Button} from "@/components/ui/button.tsx";
@@ -36,9 +36,9 @@ interface ResultsDataTableProps<TData, TValue> {
 }
 
 export function ResultsDataTable<TData, TValue>({
-                                                    columns,
-                                                    data,
-                                                }: ResultsDataTableProps<TData, TValue>) {
+    columns,
+    data,
+}: ResultsDataTableProps<TData, TValue>) {
     const table = useReactTable({
         data,
         columns,
@@ -55,11 +55,20 @@ export function ResultsDataTable<TData, TValue>({
     return (
         <div className="rounded-md border max-h-full w-full max-w-screen">
             <div className="flex items-center justify-end space-x-2">
-                <ScrollArea className={"mr-auto"}>
-                    {tables.map((table, index) => (
+                <ScrollArea className={"flex mr-auto"}>
+                    <HoverCard>
+                        <HoverCardTrigger>
+                            <InfoIcon className={"inline m-0 w-4 h-4 mx-4"}/>
+                        </HoverCardTrigger>
+                        <HoverCardContent>
+                            Click on any of these table names to view the data
+                        </HoverCardContent>
+                    </HoverCard>
+
+                    {tables.map(table => (
                         <Button
                             variant={"ghost"}
-                            className={`rounded-none ${index === 0 && "rounded-tl-md"}`}
+                            className={"rounded-none"}
                             key={table}
                             onClick={() => {
                                 const query = `SELECT * FROM ${table}`
@@ -125,15 +134,14 @@ export function ResultsDataTable<TData, TValue>({
                                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </HoverCardTrigger>
                                                 <HoverCardContent
-                                                    className={"flex gap-x-2 w-fit max-w-[600px] truncate"}>
+                                                    className={"cursor-pointer flex gap-x-2 w-fit max-w-[600px] truncate"}
+                                                    onClick={() => {
+                                                        copyTextToClipboard(cell.getContext().getValue() as string)
+                                                        toast.success("Copied to clipboard!")
+                                                    }}
+                                                >
                                                     {cell.getContext().getValue() as ReactNode}
-                                                    <CopyIcon
-                                                        className={"cursor-pointer"}
-                                                        onClick={() => {
-                                                            copyTextToClipboard(cell.getContext().getValue() as string)
-                                                            toast.success("Copied to clipboard!")
-                                                        }}
-                                                    />
+                                                    <CopyIcon className={"w-4 h-4"}/>
                                                 </HoverCardContent>
                                             </HoverCard>
                                         </TableCell>
