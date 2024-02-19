@@ -58,10 +58,10 @@ const App = () => {
 
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <div className={"p-4 w-screen h-screen max-w-screen max-h-screen flex flex-col overflow-x-hidden"}>
+            <div className={"w-screen h-screen max-w-screen max-h-screen flex flex-col overflow-x-hidden"}>
                 <Navbar/>
                 {isLoaded ? (
-                    <div className={"flex flex-col gap-y-6 w-full h-full max-h-full max-w-full"}>
+                    <div className={"p-4 flex flex-col gap-y-6 w-full h-full max-h-full max-w-full"}>
                         <Button onClick={executeQuery}>
                             Run query
                         </Button>
@@ -90,7 +90,9 @@ const App = () => {
                         </div>
                     </div>
                 ) : (
-                    <div>Not yet Loaded</div>
+                    <div className={"p-4 flex flex-col gap-y-6 w-full h-full max-h-full max-w-full"}>
+                        Not yet Loaded
+                    </div>
                 )}
                 <Toaster richColors />
             </div>
