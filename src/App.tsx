@@ -12,10 +12,19 @@ import Navbar from "@/components/Navbar.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {toast} from "sonner";
 
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const {addTable} = useTablesStore();
-    const {query, setQuery, data, setData, setQueryError, addPreviousQueries} = useAlasqlStore();
+    const {query, setQuery, data, setData, setQueryError, addPreviousQueries, previousQueries} = useAlasqlStore();
 
     const executeQuery = () => {
         alasql.promise(query)
@@ -52,36 +61,47 @@ const App = () => {
         });
     }, []);
 
+    {/*<Button onClick={() => {*/}
+    {/*    console.log(alasql(`SELECT t.territoryDescription*/}
+    {/*                FROM territories t*/}
+    {/*                JOIN employee_territories et ON t.territoryID = et.territoryID*/}
+    {/*                WHERE et.employeeID = 2;*/}
+    {/*                `))*/}
+    {/*}}>*/}
+    {/*    join query*/}
+    {/*</Button>*/}
+
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <div className={"w-screen h-screen flex flex-col overflow-x-hidden"}>
+            <div className={"w-screen h-screen flex flex-col max-w-screen max-h-screen overflow-x-hidden"}>
                 <Navbar/>
                 {isLoaded ? (
-                    <div className={"p-4 flex flex-col gap-y-6 w-full h-full max-h-full max-w-full"}>
-                        <Button onClick={executeQuery}>Run query</Button>
+                    <div className={"p-4 flex gap-x-4 w-full h-full max-h-full max-w-full"}>
+                        <Card className={"w-1/6 max-w-1/6"}>
+                            <CardHeader>
+                                <CardTitle>Previous Queries</CardTitle>
+                                <CardDescription>Click to execute</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                {previousQueries.map(query => <code key={query}>{query}</code>)}
+                            </CardContent>
+                        </Card>
+                        <div className={"w-5/6 max-w-5/6 flex flex-col gap-y-6"}>
+                            <Button onClick={executeQuery}>Run query</Button>
 
-                        {/*<Button onClick={() => {*/}
-                        {/*    console.log(alasql(`SELECT t.territoryDescription*/}
-                        {/*                FROM territories t*/}
-                        {/*                JOIN employee_territories et ON t.territoryID = et.territoryID*/}
-                        {/*                WHERE et.employeeID = 2;*/}
-                        {/*                `))*/}
-                        {/*}}>*/}
-                        {/*    join query*/}
-                        {/*</Button>*/}
+                            <div className={"w-1/2 h-1/2 max-w-[50%] max-h-[50%]"}>
+                                <SQLEditor/>
+                            </div>
 
-                        <div className={"w-1/2 h-1/2 max-w-[50%] max-h-[50%]"}>
-                            <SQLEditor/>
-                        </div>
-
-                        <div className={"w-full h-1/2 max-h-[50%]"}>
-                            <ResultsDataTable
-                                columns={Object.keys(data![0]).map(key => ({
-                                    accessorKey: key,
-                                    header: key,
-                                }))}
-                                data={data!}
-                            />
+                            <div className={"w-full h-1/2 max-h-[50%]"}>
+                                <ResultsDataTable
+                                    columns={Object.keys(data![0]).map(key => ({
+                                        accessorKey: key,
+                                        header: key,
+                                    }))}
+                                    data={data!}
+                                />
+                            </div>
                         </div>
                     </div>
                 ) : (
@@ -92,7 +112,7 @@ const App = () => {
                 <Toaster richColors />
             </div>
         </ThemeProvider>
-    )
+    );
 }
 
 export default App
