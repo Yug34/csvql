@@ -148,15 +148,16 @@ const App = () => {
                                     </CardHeader>
                                     <CardContent className={"flex flex-col gap-y-2"}>
                                         {previousQueries.map(query => (
-                                            <Button
-                                                key={query}
-                                                variant={"outline"}
-                                                className={"p-2 flex w-full max-w-full justify-between"}
-                                                onClick={() => executeQuery(query)}
-                                            >
-                                                <div>{stripQueryOfComments(query)}</div>
-                                                <PlayIcon size={"1.25rem"}/>
-                                            </Button>
+                                            <div className={"flex items-center border rounded-md p-2"} key={query}>
+                                                <code className={"text-xs"}>{stripQueryOfComments(query)}</code>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={"p-2"}
+                                                    onClick={() => executeQuery(query)}
+                                                >
+                                                    <PlayIcon className={"ml-1"} size={"1.25rem"}/>
+                                                </Button>
+                                            </div>
                                         ))}
                                     </CardContent>
                                     <ScrollBar/>
