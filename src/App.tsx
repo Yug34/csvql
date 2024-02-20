@@ -33,6 +33,7 @@ import CSVUpload from "@/components/CSVUpload.tsx";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isUploadDialogOpen, setIsUploadDialogOpen] = useState<boolean>(false);
     const {addTable} = useTablesStore();
     const {
         query,
@@ -148,7 +149,7 @@ const App = () => {
                                     </CardHeader>
                                     <CardContent className={"flex flex-col gap-y-2"}>
                                         {previousQueries.map(query => (
-                                            <div className={"flex items-center border rounded-md p-2"} key={query}>
+                                            <div className={"flex justify-between items-center border rounded-md p-2"} key={query}>
                                                 <code className={"text-xs"}>{stripQueryOfComments(query)}</code>
                                                 <Button
                                                     variant={"outline"}
@@ -189,18 +190,21 @@ const App = () => {
                                             <Separator/>
                                         </CardHeader>
                                         <div>
-                                            <Dialog>
+                                            <Dialog open={isUploadDialogOpen}>
                                                 <DialogTrigger asChild>
                                                     <Button
                                                         className={"flex gap-x-2 w-full rounded-none"}
                                                         variant="outline"
+                                                        onClick={() => {
+                                                            setIsUploadDialogOpen(true);
+                                                        }}
                                                     >
                                                         Import Data
                                                         <UploadIcon size={"1.25rem"}/>
                                                     </Button>
                                                 </DialogTrigger>
                                                 <DialogContent className="p-0 border-none">
-                                                    <CSVUpload />
+                                                    <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen} />
                                                 </DialogContent>
                                             </Dialog>
                                             <Button

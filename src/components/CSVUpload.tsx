@@ -11,7 +11,11 @@ import {useTablesStore} from "@/store/tablesStore.ts";
 import {useAlasqlStore} from "@/store/alasqlStore.ts";
 import {roundNumber} from "@/lib/utils.ts";
 
-export default function CSVUpload() {
+interface CSVUploadProps {
+    setIsUploadDialogOpen: (isOpen: boolean) => void;
+}
+
+export default function CSVUpload({setIsUploadDialogOpen}: CSVUploadProps) {
     const [csvData, setCSVData] = useState<null | string>(null);
     const [tableName, setTableName] = useState<string>("");
     // const [queryData, setQueryData] = useState<null | Record<string, string>[]>(null);
@@ -44,6 +48,7 @@ export default function CSVUpload() {
         let endTime = performance.now();
         let timeElapsed = endTime - startTime;
         setQueryExecutionTime(roundNumber(timeElapsed));
+        setIsUploadDialogOpen(false);
     }
 
     return (
