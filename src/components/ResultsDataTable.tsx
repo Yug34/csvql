@@ -105,9 +105,9 @@ export function ResultsDataTable<TData, TValue>({
 
             <Separator/>
 
-            <ScrollArea className="w-full whitespace-nowrap">
+            <ScrollArea className="h-[400px] w-full whitespace-nowrap">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className={"sticky top-0 bg-secondary"}>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
