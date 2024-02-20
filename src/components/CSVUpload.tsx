@@ -4,33 +4,39 @@ import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {UploadIcon} from "lucide-react";
+import alasql from "alasql";
+import {useTablesStore} from "@/store/tablesStore.ts";
+import {roundNumber} from "@/lib/utils.ts";
+import {useAlasqlStore} from "@/store/alasqlStore.ts";
 
 export default function CSVUpload() {
+    const {addTable} = useTablesStore();
+    const {setQuery, setData, setQueryExecutionTime} = useAlasqlStore();
+
     const getCSVDataFromFile = (event: ChangeEvent) => {
         const file = (event.target as HTMLInputElement).files![0];
         const reader = new FileReader();
 
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             const contents = e.target!.result;
-            parseCSV(contents as string);
+            const tableName = "new_table";
+            addTable(tableName);
+
+            await alasql.promise(`CREATE TABLE ${tableName}`);
+            await alasql.promise(`INSERT INTO ${tableName} SELECT * FROM CSV(?, {headers: true, separator:","});`, [contents]);
+
+            let startTime = performance.now();
+            const query = `-- Enter SQL Query here:\nSELECT * FROM ${tableName}`;
+            setQuery(query);
+            setData(alasql(query));
+
+            let endTime = performance.now();
+            let timeElapsed = endTime - startTime;
+            setQueryExecutionTime(roundNumber(timeElapsed));
         };
 
         reader.readAsText(file);
     };
-
-    const parseCSV = (csvData: string) => {
-        // Here you can use a CSV parsing library or implement your own parsing logic
-        // For example, you can split the CSV data by line and then by comma
-        const lines = csvData.split('\n');
-        const values = lines.map((line: string) => line.split(','));
-
-        if (values[0].length !== values[values.length - 1].length) {
-            values.pop(); // Remove a row added mistakenly due to trailing whitespace
-        }
-
-        console.log(values);
-    };
-
 
     return (
         <div className={"flex flex-col h-full justify-center items-center w-full"}>
