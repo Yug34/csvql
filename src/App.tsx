@@ -24,6 +24,14 @@ import {
     DialogContent,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
 import {roundNumber, stripQueryOfComments} from "@/lib/utils.ts";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Table, TableBody, TableCell, TableRow} from "@/components/ui/table.tsx";
@@ -111,7 +119,7 @@ const App = () => {
                 <Navbar/>
                 {isLoaded ? (
                     <div className={"p-4 flex gap-x-4 w-full h-full max-h-full max-w-full"}>
-                        <div className={"w-1/5 max-w-1/5 flex flex-col"}>
+                        <div className={"hidden w-1/5 max-w-1/5 xl:flex flex-col"}>
                             <Card className={"h-1/2 rounded-b-none"}>
                                 <CardHeader>
                                     <CardTitle>Sample Queries</CardTitle>
@@ -166,8 +174,43 @@ const App = () => {
                             </Card>
                         </div>
 
-                        <div className={"w-4/5 max-w-4/5 flex flex-col gap-y-6"}>
+                        <div className={"w-full max-w-full xl:w-4/5 xl:max-w-4/5 flex flex-col gap-y-6"}>
                             <Button onClick={() => executeQuery()}>Run query</Button>
+
+                            <div className={"flex w-full xl:hidden"}>
+                                <Sheet>
+                                    <SheetTrigger className={"w-full"}>
+                                        <Button className={"w-full rounded-r-none"}>
+                                            View sample queries
+                                        </Button>
+                                    </SheetTrigger>
+                                    <SheetContent side={"left"}>
+                                        <SheetHeader>
+                                            <SheetTitle>Are you absolutely sure?</SheetTitle>
+                                            <SheetDescription>
+                                                This action cannot be undone. This will permanently delete your account
+                                                and remove your data from our servers.
+                                            </SheetDescription>
+                                        </SheetHeader>
+                                    </SheetContent>
+                                </Sheet>
+                                <Sheet>
+                                    <SheetTrigger className={"w-full"}>
+                                        <Button variant={"outline"} className={"w-full rounded-l-none"}>
+                                            View previous queries
+                                        </Button>
+                                    </SheetTrigger>
+                                    <SheetContent side={"left"}>
+                                        <SheetHeader>
+                                            <SheetTitle>Are you absolutely sure?</SheetTitle>
+                                            <SheetDescription>
+                                                This action cannot be undone. This will permanently delete your account
+                                                and remove your data from our servers.
+                                            </SheetDescription>
+                                        </SheetHeader>
+                                    </SheetContent>
+                                </Sheet>
+                            </div>
 
                             <div className={"flex w-full h-1/2 max-h-[50%] gap-x-6"}>
                                 <SQLEditor/>
