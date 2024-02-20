@@ -43,4 +43,11 @@ export const DATA_FILES = [
         fileName: "territories.csv",
         tableName: "territories"
     }
+];
+
+export const SAMPLE_QUERIES: {query: string; queryName: string;}[] = [
+    {
+        query: `SELECT t.territoryDescription FROM territories t JOIN employee_territories et ON t.territoryID = et.territoryID WHERE et.employeeID = 2;`,
+        queryName: "Random"
+    }
 ]
