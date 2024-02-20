@@ -19,10 +19,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import {roundNumber} from "@/lib/utils.ts";
+import {roundNumber, stripQueryOfComments} from "@/lib/utils.ts";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Table, TableBody, TableCell, TableRow} from "@/components/ui/table.tsx";
-import {DownloadIcon} from "lucide-react";
+import {DownloadIcon, UploadIcon} from "lucide-react";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -56,6 +56,15 @@ const App = () => {
             .catch((err: { message: string }) => {
                 toast.error(err.message);
             });
+    }
+
+    const exportDataToCSV = () => {
+        alasql.promise('SELECT * INTO CSV("output.csv", {headers:false}) FROM ?', [data])
+            .then(() => {
+                toast.success("Data downloaded as CSV!");
+            }).catch((err) => {
+            toast.error("Error saving data: ", err);
+        });
     }
 
     useEffect(() => {
@@ -113,7 +122,7 @@ const App = () => {
                                 <CardDescription>Click to execute</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                {previousQueries.map(query => <code key={query}>{query}</code>)}
+                                {previousQueries.map(query => <code key={query}>{stripQueryOfComments(query)}</code>)}
                             </CardContent>
                         </Card>
                         <div className={"w-5/6 max-w-5/6 flex flex-col gap-y-6"}>
@@ -122,32 +131,29 @@ const App = () => {
                             <div className={"flex w-full h-1/2 max-h-[50%] gap-x-6"}>
                                 <SQLEditor/>
                                 <Card className={"w-1/2"}>
-                                    <CardHeader className={"flex justify-center p-0 pl-4 h-10"}>
-                                        <CardTitle>Query Metadata</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className={"p-0 flex flex-col justify-between h-fit"}>
-                                        <Table className={"p-4"}>
-                                            <TableBody>
-                                                <TableRow>
-                                                    <TableCell>Execution time</TableCell>
-                                                    <TableCell>{queryExecutionTime ?? 0}ms</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell>Rows returned</TableCell>
-                                                    <TableCell>{data?.length ?? 0}</TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
+                                    <CardContent className={"p-0 flex flex-col justify-between h-full"}>
+                                        <CardHeader className={"flex justify-center p-0"}>
+                                            <CardTitle className={"p-4"}>Query Metadata</CardTitle>
+                                            <Table className={"p-4"}>
+                                                <TableBody>
+                                                    <TableRow>
+                                                        <TableCell>Execution time</TableCell>
+                                                        <TableCell>{queryExecutionTime ?? 0}ms</TableCell>
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell>Rows returned</TableCell>
+                                                        <TableCell>{data?.length ?? 0}</TableCell>
+                                                    </TableRow>
+                                                </TableBody>
+                                            </Table>
+                                            <Separator/>
+                                        </CardHeader>
                                         <div>
-                                            <Button className={"w-full rounded-none"} variant="outline">Cancel</Button>
-                                            <Button className={"flex gap-x-2 w-full rounded-none rounded-b-lg"} onClick={() => {
-                                                alasql.promise('SELECT * INTO CSV("output.csv", {headers:false}) FROM ?', [data])
-                                                    .then(() => {
-                                                        toast.success("Data downloaded as CSV!");
-                                                    }).catch((err) => {
-                                                    toast.error("Error saving data: ", err);
-                                                });
-                                            }}>
+                                            <Button className={"flex gap-x-2 w-full rounded-none"} variant="outline">
+                                                Import Data
+                                                <UploadIcon size={"1.25rem"}/>
+                                            </Button>
+                                            <Button className={"flex gap-x-2 w-full rounded-none rounded-b-lg"} onClick={exportDataToCSV}>
                                                 Export Data as CSV
                                                 <DownloadIcon size={"1.25rem"}/>
                                             </Button>

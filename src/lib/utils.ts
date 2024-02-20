@@ -13,3 +13,8 @@ export const roundNumber = (num: number) => {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+export const stripQueryOfComments = (query: string) => {
+  const commentRegex = /--.*\n/g;
+  return query.replace(commentRegex, "");
+}
