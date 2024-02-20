@@ -18,12 +18,22 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import {roundNumber, stripQueryOfComments} from "@/lib/utils.ts";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Table, TableBody, TableCell, TableRow} from "@/components/ui/table.tsx";
 import {DownloadIcon, PlayIcon, UploadIcon} from "lucide-react";
-import {ScrollArea} from "@/components/ui/scroll-area.tsx";
+import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area.tsx";
+import CSVUpload from "@/components/CSVUpload.tsx";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -42,6 +52,10 @@ const App = () => {
 
     const executeQuery = (queryToRun?: string) => {
         let startTime = performance.now();
+
+        if (queryToRun) {
+            setQuery(queryToRun); // Sync query to the editor
+        }
 
         alasql.promise(queryToRun ?? query)
             .then((data: Record<string, string>[]) => {
@@ -110,25 +124,47 @@ const App = () => {
                                     {SAMPLE_QUERIES.map(({query, queryName}) => (
                                         <ScrollArea key={queryName}>
                                             <Card className={"p-2"}>
-                                                <div className={"flex w-full font-semibold justify-between"}>
-                                                    <div>{queryName}</div>
-                                                    <PlayIcon className={"cursor-pointer"} size={"1.25rem"} onClick={() => executeQuery(query)}/>
+                                                <div
+                                                    className={"flex w-full items-center font-semibold justify-between"}>
+                                                    <div className={"text-sm"}>
+                                                        {queryName}
+                                                    </div>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className={"p-2"}
+                                                        onClick={() => executeQuery(query)}
+                                                    >
+                                                        <PlayIcon className={"ml-1"} size={"1.25rem"}/>
+                                                    </Button>
                                                 </div>
+                                                <Separator className={"my-2"}/>
                                                 <code className={"text-xs"}>{query}</code>
                                             </Card>
                                         </ScrollArea>
                                     ))}
                                 </CardContent>
                             </Card>
-                            <Card className={"h-1/2 border-t-0 rounded-t-none"}>
-                                <CardHeader>
-                                    <CardTitle>Previous Queries</CardTitle>
-                                    <CardDescription>Click to execute</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    {previousQueries.map(query => <code
-                                        key={query}>{stripQueryOfComments(query)}</code>)}
-                                </CardContent>
+                            <Card className={"h-1/2 min-h-1/2 border-t-0 rounded-t-none"}>
+                                <ScrollArea className={"max-h-full"}>
+                                    <CardHeader>
+                                        <CardTitle>Previous Queries</CardTitle>
+                                        <CardDescription>Click to execute</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className={"flex flex-col gap-y-2"}>
+                                        {previousQueries.map(query => (
+                                            <Button
+                                                key={query}
+                                                variant={"outline"}
+                                                className={"p-2 flex w-full max-w-full justify-between"}
+                                                onClick={() => executeQuery(query)}
+                                            >
+                                                <div>{stripQueryOfComments(query)}</div>
+                                                <PlayIcon size={"1.25rem"}/>
+                                            </Button>
+                                        ))}
+                                    </CardContent>
+                                    <ScrollBar/>
+                                </ScrollArea>
                             </Card>
                         </div>
 
@@ -156,12 +192,24 @@ const App = () => {
                                             <Separator/>
                                         </CardHeader>
                                         <div>
-                                            <Button className={"flex gap-x-2 w-full rounded-none"} variant="outline">
-                                                Import Data
-                                                <UploadIcon size={"1.25rem"}/>
-                                            </Button>
-                                            <Button className={"flex gap-x-2 w-full rounded-none rounded-b-lg"}
-                                                    onClick={exportDataToCSV}>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button
+                                                        className={"flex gap-x-2 w-full rounded-none"}
+                                                        variant="outline"
+                                                    >
+                                                        Import Data
+                                                        <UploadIcon size={"1.25rem"}/>
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-w-[600px]">
+                                                    <CSVUpload />
+                                                </DialogContent>
+                                            </Dialog>
+                                            <Button
+                                                className={"flex gap-x-2 w-full rounded-none rounded-b-lg"}
+                                                onClick={exportDataToCSV}
+                                            >
                                                 Export Data as CSV
                                                 <DownloadIcon size={"1.25rem"}/>
                                             </Button>

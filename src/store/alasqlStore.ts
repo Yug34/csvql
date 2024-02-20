@@ -21,7 +21,7 @@ export const useAlasqlStore = create<AlaSQLStore>()((set) => ({
     setData: (data: Record<string, string>[]) => set(() => ({data: data})),
     queryError: null,
     setQueryError: (err: string | null) => set(() => ({queryError: err})),
-    previousQueries: ["SELECT * FROM employees"],
+    previousQueries: [],
     setPreviousQueries: (queries: string[]) => set(() => ({previousQueries: queries})),
     addPreviousQueries: (query: string) => set((state) => ({
         previousQueries: [...state.previousQueries, query]

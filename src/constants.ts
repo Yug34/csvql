@@ -48,6 +48,6 @@ export const DATA_FILES = [
 export const SAMPLE_QUERIES: {query: string; queryName: string;}[] = [
     {
         query: `SELECT t.territoryDescription FROM territories t JOIN employee_territories et ON t.territoryID = et.territoryID WHERE et.employeeID = 2;`,
-        queryName: "Random"
+        queryName: "JOIN: Get all territory names assigned to the employee with employeeID = 2"
     }
 ]
