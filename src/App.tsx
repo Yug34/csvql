@@ -22,10 +22,6 @@ import {
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {roundNumber, stripQueryOfComments} from "@/lib/utils.ts";

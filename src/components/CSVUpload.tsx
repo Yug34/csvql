@@ -7,7 +7,7 @@ import {UploadIcon} from "lucide-react";
 
 export default function CSVUpload() {
     const getCSVDataFromFile = (event: ChangeEvent) => {
-        const file = event.target.files[0];
+        const file = (event.target as HTMLInputElement).files![0];
         const reader = new FileReader();
 
         reader.onload = (e) => {
