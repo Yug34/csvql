@@ -34,8 +34,7 @@ import {
 } from "@/components/ui/sheet"
 import {roundNumber, stripQueryOfComments} from "@/lib/utils.ts";
 import {Separator} from "@/components/ui/separator.tsx";
-import {Table, TableBody, TableCell, TableRow} from "@/components/ui/table.tsx";
-import {DownloadIcon, PlayIcon, UploadIcon} from "lucide-react";
+import {DownloadIcon, Loader2, PlayIcon, UploadIcon} from "lucide-react";
 import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area.tsx";
 import CSVUpload from "@/components/CSVUpload.tsx";
 
@@ -318,8 +317,13 @@ const App = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className={"p-4 flex flex-col gap-y-6 w-full h-full max-h-full max-w-full"}>
-                        Not yet Loaded
+                    <div className={"flex flex-col w-full h-full items-center justify-center"}>
+                        <Card>
+                            <CardContent className={"p-4 flex items-center gap-x-4"}>
+                                Fetching data, populating local database
+                                <Loader2 className={"animate-spin"}/>
+                            </CardContent>
+                        </Card>
                     </div>
                 )}
                 <Toaster richColors/>
@@ -328,4 +332,4 @@ const App = () => {
     );
 }
 
-export default App
+export default App;
