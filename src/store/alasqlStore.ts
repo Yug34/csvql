@@ -10,6 +10,8 @@ interface AlaSQLStore {
     previousQueries: string[];
     setPreviousQueries: (queries: string[]) => void;
     addPreviousQueries: (query: string) => void;
+    queryExecutionTime: number | null;
+    setQueryExecutionTime: (time: number) => void;
 }
 
 export const useAlasqlStore = create<AlaSQLStore>()((set) => ({
@@ -24,4 +26,6 @@ export const useAlasqlStore = create<AlaSQLStore>()((set) => ({
     addPreviousQueries: (query: string) => set((state) => ({
         previousQueries: [...state.previousQueries, query]
     })),
+    queryExecutionTime: null,
+    setQueryExecutionTime: (time: number) => set(() => ({queryExecutionTime: time}))
 }));

@@ -15,17 +15,32 @@ import {toast} from "sonner";
 import {
     Card,
     CardContent,
-    CardDescription,
+    CardDescription, CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import {roundNumber} from "@/lib/utils.ts";
+import {Separator} from "@/components/ui/separator.tsx";
+import {Table, TableBody, TableCell, TableRow} from "@/components/ui/table.tsx";
+import {DownloadIcon} from "lucide-react";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const {addTable} = useTablesStore();
-    const {query, setQuery, data, setData, setQueryError, addPreviousQueries, previousQueries} = useAlasqlStore();
+    const {
+        query,
+        setQuery,
+        data,
+        setData,
+        setQueryError,
+        addPreviousQueries,
+        previousQueries,
+        queryExecutionTime,
+        setQueryExecutionTime
+    } = useAlasqlStore();
 
     const executeQuery = () => {
+        let startTime = performance.now();
         alasql.promise(query)
             .then((data: Record<string, string>[]) => {
                 if (data) {
@@ -33,9 +48,12 @@ const App = () => {
                     setQueryError(null);
                     toast.success("Query executed!");
                     addPreviousQueries(query!);
+                    let endTime = performance.now()
+                    let timeElapsed = endTime - startTime;
+                    setQueryExecutionTime(roundNumber(timeElapsed));
                 }
             })
-            .catch((err: {message: string}) => {
+            .catch((err: { message: string }) => {
                 toast.error(err.message);
             });
     }
@@ -54,21 +72,34 @@ const App = () => {
             await alasql.promise(`INSERT INTO ${tableName} SELECT * FROM CSV(?, {headers: true, separator:","});`, [csvData]);
             addTable(tableName);
         })).then(() => {
+            let startTime = performance.now();
             const query = `-- Enter SQL Query here:\nSELECT * FROM employees`;
             setQuery(query);
             setData(alasql(query));
+            let endTime = performance.now()
+            let timeElapsed = endTime - startTime;
+            setQueryExecutionTime(roundNumber(timeElapsed));
         });
     }, []);
 
-    {/*<Button onClick={() => {*/}
-    {/*    console.log(alasql(`SELECT t.territoryDescription*/}
-    {/*                FROM territories t*/}
-    {/*                JOIN employee_territories et ON t.territoryID = et.territoryID*/}
-    {/*                WHERE et.employeeID = 2;*/}
-    {/*                `))*/}
-    {/*}}>*/}
-    {/*    join query*/}
-    {/*</Button>*/}
+    {/*<Button onClick={() => {*/
+    }
+    {/*    console.log(alasql(`SELECT t.territoryDescription*/
+    }
+    {/*                FROM territories t*/
+    }
+    {/*                JOIN employee_territories et ON t.territoryID = et.territoryID*/
+    }
+    {/*                WHERE et.employeeID = 2;*/
+    }
+    {/*                `))*/
+    }
+    {/*}}>*/
+    }
+    {/*    join query*/
+    }
+    {/*</Button>*/
+    }
 
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -88,8 +119,41 @@ const App = () => {
                         <div className={"w-5/6 max-w-5/6 flex flex-col gap-y-6"}>
                             <Button onClick={executeQuery}>Run query</Button>
 
-                            <div className={"w-1/2 h-1/2 max-w-[50%] max-h-[50%]"}>
+                            <div className={"flex w-full h-1/2 max-h-[50%] gap-x-6"}>
                                 <SQLEditor/>
+                                <Card className={"w-1/2"}>
+                                    <CardHeader className={"flex justify-center p-0 pl-4 h-10"}>
+                                        <CardTitle>Query Metadata</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className={"p-0 flex flex-col justify-between h-fit"}>
+                                        <Table className={"p-4"}>
+                                            <TableBody>
+                                                <TableRow>
+                                                    <TableCell>Execution time</TableCell>
+                                                    <TableCell>{queryExecutionTime ?? 0}ms</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell>Rows returned</TableCell>
+                                                    <TableCell>{data?.length ?? 0}</TableCell>
+                                                </TableRow>
+                                            </TableBody>
+                                        </Table>
+                                        <div>
+                                            <Button className={"w-full rounded-none"} variant="outline">Cancel</Button>
+                                            <Button className={"flex gap-x-2 w-full rounded-none rounded-b-lg"} onClick={() => {
+                                                alasql.promise('SELECT * INTO CSV("output.csv", {headers:false}) FROM ?', [data])
+                                                    .then(() => {
+                                                        toast.success("Data downloaded as CSV!");
+                                                    }).catch((err) => {
+                                                    toast.error("Error saving data: ", err);
+                                                });
+                                            }}>
+                                                Export Data as CSV
+                                                <DownloadIcon size={"1.25rem"}/>
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
                             </div>
 
                             <div className={"w-full h-1/2 max-h-[50%]"}>
@@ -108,7 +172,7 @@ const App = () => {
                         Not yet Loaded
                     </div>
                 )}
-                <Toaster richColors />
+                <Toaster richColors/>
             </div>
         </ThemeProvider>
     );
