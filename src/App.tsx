@@ -199,7 +199,7 @@ const App = () => {
                                                         <UploadIcon size={"1.25rem"}/>
                                                     </Button>
                                                 </DialogTrigger>
-                                                <DialogContent className="max-w-[600px]">
+                                                <DialogContent className="p-0 border-none">
                                                     <CSVUpload />
                                                 </DialogContent>
                                             </Dialog>
