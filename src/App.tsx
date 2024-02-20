@@ -157,7 +157,8 @@ const App = () => {
                                     </CardHeader>
                                     <CardContent className={"flex flex-col gap-y-2"}>
                                         {previousQueries.map(query => (
-                                            <div className={"flex justify-between items-center border rounded-md p-2"} key={query}>
+                                            <div className={"flex justify-between items-center border rounded-md p-2"}
+                                                 key={query}>
                                                 <code className={"text-xs"}>{stripQueryOfComments(query)}</code>
                                                 <Button
                                                     variant={"outline"}
@@ -186,12 +187,36 @@ const App = () => {
                                     </SheetTrigger>
                                     <SheetContent side={"left"}>
                                         <SheetHeader>
-                                            <SheetTitle>Are you absolutely sure?</SheetTitle>
+                                            <SheetTitle>Sample Queries</SheetTitle>
                                             <SheetDescription>
-                                                This action cannot be undone. This will permanently delete your account
-                                                and remove your data from our servers.
+                                                Click to execute
                                             </SheetDescription>
                                         </SheetHeader>
+                                        <Card className={"mt-4"}>
+                                            <CardContent className={"p-4 max-h-52 flex flex-col gap-y-2"}>
+                                                {SAMPLE_QUERIES.map(({query, queryName}) => (
+                                                    <ScrollArea key={queryName}>
+                                                        <Card className={"p-2"}>
+                                                            <div
+                                                                className={"flex w-full items-center font-semibold justify-between"}>
+                                                                <div className={"text-sm"}>
+                                                                    {queryName}
+                                                                </div>
+                                                                <Button
+                                                                    variant={"outline"}
+                                                                    className={"p-2"}
+                                                                    onClick={() => executeQuery(query)}
+                                                                >
+                                                                    <PlayIcon className={"ml-1"} size={"1.25rem"}/>
+                                                                </Button>
+                                                            </div>
+                                                            <Separator className={"my-2"}/>
+                                                            <code className={"text-xs"}>{query}</code>
+                                                        </Card>
+                                                    </ScrollArea>
+                                                ))}
+                                            </CardContent>
+                                        </Card>
                                     </SheetContent>
                                 </Sheet>
                                 <Sheet>
@@ -202,35 +227,54 @@ const App = () => {
                                     </SheetTrigger>
                                     <SheetContent side={"left"}>
                                         <SheetHeader>
-                                            <SheetTitle>Are you absolutely sure?</SheetTitle>
+                                            <SheetTitle>Previous Queries</SheetTitle>
                                             <SheetDescription>
-                                                This action cannot be undone. This will permanently delete your account
-                                                and remove your data from our servers.
+                                                Click to execute
                                             </SheetDescription>
                                         </SheetHeader>
+                                        <Card className={"mt-4"}>
+                                            <ScrollArea className={"max-h-full"}>
+                                                <CardContent className={"p-4 max-h-52 flex flex-col gap-y-2"}>
+                                                    {previousQueries.map(query => (
+                                                        <div className={"flex justify-between items-center border rounded-md p-2"}
+                                                             key={query}>
+                                                            <code className={"text-xs"}>{stripQueryOfComments(query)}</code>
+                                                            <Button
+                                                                variant={"outline"}
+                                                                className={"p-2"}
+                                                                onClick={() => executeQuery(query)}
+                                                            >
+                                                                <PlayIcon className={"ml-1"} size={"1.25rem"}/>
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                </CardContent>
+                                                <ScrollBar/>
+                                            </ScrollArea>
+                                        </Card>
                                     </SheetContent>
                                 </Sheet>
                             </div>
 
-                            <div className={"flex w-full h-1/2 max-h-[50%] gap-x-6"}>
+                            <div className={"flex flex-row w-full h-1/2 max-h-[50%] gap-x-6"}>
                                 <SQLEditor/>
+
                                 <Card className={"w-1/2"}>
                                     <CardContent className={"p-0 flex flex-col justify-between h-full"}>
                                         <CardHeader className={"flex justify-center p-0"}>
                                             <CardTitle className={"p-4"}>Query Metadata</CardTitle>
-                                            <Table className={"p-4"}>
-                                                <TableBody>
-                                                    <TableRow>
-                                                        <TableCell>Execution time</TableCell>
-                                                        <TableCell>{queryExecutionTime ?? 0}ms</TableCell>
-                                                    </TableRow>
-                                                    <TableRow>
-                                                        <TableCell>Rows returned</TableCell>
-                                                        <TableCell>{data?.length ?? 0}</TableCell>
-                                                    </TableRow>
-                                                </TableBody>
-                                            </Table>
-                                            <Separator/>
+                                            <div className={"flex flex-col p-4 gap-y-2"}>
+                                                <div className={"flex justify-between"}>
+                                                    <span>Execution time</span>
+                                                    <span>{queryExecutionTime ?? 0}ms</span>
+                                                </div>
+                                                <Separator />
+                                                <div className={"flex justify-between"}>
+                                                    <span>Rows returned</span>
+                                                    <span>{data?.length ?? 0}</span>
+                                                </div>
+                                            </div>
+                                            <Separator />
                                         </CardHeader>
                                         <div>
                                             <Dialog open={isUploadDialogOpen}>
@@ -247,7 +291,7 @@ const App = () => {
                                                     </Button>
                                                 </DialogTrigger>
                                                 <DialogContent className="p-0 border-none">
-                                                    <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen} />
+                                                    <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen}/>
                                                 </DialogContent>
                                             </Dialog>
                                             <Button
