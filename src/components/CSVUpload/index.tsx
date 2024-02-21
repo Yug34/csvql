@@ -6,11 +6,11 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx
 import {UploadIcon} from "lucide-react";
 import alasql from "alasql";
 import {Button} from "@/components/ui/button.tsx";
-import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area.tsx";
 import {useTablesStore} from "@/store/tablesStore.ts";
 import {useAlasqlStore} from "@/store/alasqlStore.ts";
 import {roundNumber} from "@/lib/utils.ts";
 import {useQueryMetadataStore} from "@/store/queryMetadataStore.ts";
+import {toast} from "sonner";
 
 interface CSVUploadProps {
     setIsUploadDialogOpen: (isOpen: boolean) => void;
@@ -37,31 +37,35 @@ const CSVUpload = ({setIsUploadDialogOpen}: CSVUploadProps) => {
     };
 
     const createTable = async () => {
-        addTable(tableName);
+        const startTime = performance.now();
         await alasql.promise(`CREATE TABLE ${tableName}`);
-        await alasql.promise(`INSERT INTO ${tableName} SELECT * FROM CSV(?, {headers: true, separator:","});`, [csvData]);
-        let startTime = performance.now();
-        const query = `-- Enter SQL Query here:\nSELECT * FROM ${tableName}`;
-        setQuery(query);
-        setData(alasql(query));
-        let endTime = performance.now();
-        let timeElapsed = endTime - startTime;
-        setQueryExecutionTime(roundNumber(timeElapsed));
+        await alasql.promise(`INSERT INTO ${tableName} SELECT * FROM CSV(?, {headers: true, separator:","});`, [csvData]).then(() => {
+            const query = `-- Enter SQL Query here:\nSELECT * FROM ${tableName}`;
+            setQuery(query);
+            setData(alasql(query));
+            const endTime = performance.now();
+            const timeElapsed = endTime - startTime;
+            setQueryExecutionTime(roundNumber(timeElapsed));
+            addTable(tableName);
+            toast.success(`Created table ${tableName} in ${roundNumber(timeElapsed)}ms`);
+        }).catch(() => {
+            toast.error(`Something went wrong creating table ${tableName}. :(`);
+        });
         setIsUploadDialogOpen(false);
     }
 
     return (
         <div className={"flex flex-col h-full justify-center items-center w-full max-w-full"}>
             <Card className={"w-full"}>
-                {csvData ? (
-                    <>
-                        <CardHeader>
-                            <CardTitle className="mb-3 flex justify-between items-center">
-                                <div>Name your new table</div>
-                            </CardTitle>
-                        </CardHeader>
+                <CardHeader>
+                    <CardTitle className="mb-3 flex justify-between items-center">
+                        <div>{csvData ? "Name your new table" : "Import a CSV file"}</div>
+                    </CardTitle>
+                </CardHeader>
 
-                        <CardContent>
+                <CardContent>
+                    {csvData ? (
+                        <>
                             <Input
                                 type={"text"}
                                 placeholder={"Enter new table name"}
@@ -73,17 +77,9 @@ const CSVUpload = ({setIsUploadDialogOpen}: CSVUploadProps) => {
                             <Button className={"w-full mt-6"} onClick={createTable}>
                                 Create table
                             </Button>
-                        </CardContent>
-                    </>
-                ) : (
-                    <>
-                        <CardHeader>
-                            <CardTitle className="mb-3 flex justify-between items-center">
-                                <div>Import a CSV file</div>
-                            </CardTitle>
-                        </CardHeader>
-
-                        <CardContent>
+                        </>
+                    ) : (
+                        <>
                             <Label htmlFor="dropzone-file" className={"cursor-pointer"}>
                                 <Card
                                     className="flex p-4 items-center justify-center w-full brightness-[0.95] hover:brightness-[0.90] dark:brightness-125 dark:hover:brightness-150">
@@ -106,9 +102,9 @@ const CSVUpload = ({setIsUploadDialogOpen}: CSVUploadProps) => {
                                 className="hidden"
                                 onChange={getCSVDataFromFile}
                             />
-                        </CardContent>
-                    </>
-                )}
+                        </>
+                    )}
+                </CardContent>
             </Card>
         </div>
     );
