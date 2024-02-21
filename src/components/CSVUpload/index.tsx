@@ -74,7 +74,7 @@ const CSVUpload = ({setIsUploadDialogOpen}: CSVUploadProps) => {
                                     setTableName(e.target.value);
                                 }}
                             />
-                            <Button className={"w-full mt-6"} onClick={createTable}>
+                            <Button className={"w-full mt-6"} onClick={createTable} aria-label={"Create table"}>
                                 Create table
                             </Button>
                         </>

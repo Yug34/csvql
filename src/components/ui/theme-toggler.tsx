@@ -7,7 +7,7 @@ export function ModeToggle() {
     const {setTheme, theme} = useTheme()
 
     return (
-        <Button variant="outline" size="icon" onClick={() => {
+        <Button variant="outline" size="icon" aria-label={"Toggle Theme"} onClick={() => {
             if (theme === "light") {
                 setTheme("dark")
             } else {

@@ -23,6 +23,7 @@ const SampleQueriesList = ({executeQuery, setIsSampleQuerySheetOpen}: SampleQuer
                                 {queryName}
                             </div>
                             <Button
+                                aria-label={"Run sample query"}
                                 variant={"outline"}
                                 className={"p-2"}
                                 onClick={() => {

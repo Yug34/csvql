@@ -154,11 +154,14 @@ const App = () => {
                         </div>
 
                         <div className={"w-full max-w-full xl:w-4/5 xl:max-w-4/5 flex flex-col gap-y-6"}>
-                            <Button onClick={() => executeQuery()}>Run query</Button>
+                            <Button aria-label={"Run Query"} onClick={() => executeQuery()}>Run query</Button>
                             <div className={"flex w-full xl:hidden"}>
                                 <Sheet open={isSampleQuerySheetOpen} onOpenChange={toggleSampleQuerySheet}>
                                     <SheetTrigger className={"w-full"}>
-                                        <Button className={"w-full rounded-r-none"}>
+                                        <Button
+                                            aria-label={"View sample query list"}
+                                            className={"w-full rounded-r-none"}
+                                        >
                                             View sample queries
                                         </Button>
                                     </SheetTrigger>
@@ -180,7 +183,11 @@ const App = () => {
 
                                 <Sheet open={isPrevQuerySheetOpen} onOpenChange={togglePrevQuerySheet}>
                                     <SheetTrigger className={"w-full"}>
-                                        <Button variant={"outline"} className={"w-full rounded-l-none"}>
+                                        <Button
+                                            aria-label={"View previous query list"}
+                                            variant={"outline"}
+                                            className={"w-full rounded-l-none"}
+                                        >
                                             View previous queries
                                         </Button>
                                     </SheetTrigger>
@@ -211,7 +218,11 @@ const App = () => {
                             <div className={"flex w-full"}>
                                 <Dialog open={isUploadDialogOpen} onOpenChange={toggleDialog}>
                                     <DialogTrigger asChild>
-                                        <Button className={"w-full rounded-r-none flex gap-x-2"} variant="outline">
+                                        <Button
+                                            aria-label={"Import data from CSV file"}
+                                            className={"w-full rounded-r-none flex gap-x-2"}
+                                            variant="outline"
+                                        >
                                             Import Data
                                             <UploadIcon size={"1.25rem"}/>
                                         </Button>
@@ -220,7 +231,11 @@ const App = () => {
                                         <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen}/>
                                     </DialogContent>
                                 </Dialog>
-                                <Button className={"flex gap-x-2 w-full rounded-l-none"} onClick={exportDataToCSV}>
+                                <Button
+                                    aria-label={"Export query results as CSV"}
+                                    className={"flex gap-x-2 w-full rounded-l-none"}
+                                    onClick={exportDataToCSV}
+                                >
                                     Export Data as CSV
                                     <DownloadIcon size={"1.25rem"}/>
                                 </Button>

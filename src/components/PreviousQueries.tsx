@@ -22,6 +22,7 @@ const PreviousQueriesList = ({executeQuery, setIsPrevQuerySheetOpen}: PreviousQu
                         <div className={"flex justify-between items-center border rounded-md p-2"} key={query}>
                             <code className={"text-xs"}>{stripQueryOfComments(query)}</code>
                             <Button
+                                aria-label={"Run previous query"}
                                 variant={"outline"}
                                 className={"p-2"}
                                 onClick={() => {

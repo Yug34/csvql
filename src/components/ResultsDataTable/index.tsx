@@ -66,7 +66,10 @@ const ResultsDataTable = <TData, TValue>({
                     <div className={"flex w-fit items-center"}>
                         <DropdownMenu>
                             <DropdownMenuTrigger>
-                                <Button className={"rounded-r-none rounded-bl-none"}>Select table</Button>
+                                <Button
+                                    className={"rounded-r-none rounded-bl-none"}
+                                    aria-label={"Open dropdown of tables available"}
+                                >Select table</Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
                                 <ScrollArea className={"h-52 max-h-52"}>
@@ -77,6 +80,7 @@ const ResultsDataTable = <TData, TValue>({
                                         return (
                                             <DropdownMenuItem key={table} className={"p-0"}>
                                                 <Button
+                                                    aria-label={"Inspect data of a specific table"}
                                                     variant={"ghost"}
                                                     className={`w-full h-full rounded-none ${isTableInQuery && "font-semibold underline underline-offset-4"}`}
                                                     onClick={() => {
@@ -98,6 +102,7 @@ const ResultsDataTable = <TData, TValue>({
                 </ScrollArea>
                 <div className={"flex w-fit min-w-fit"}>
                     <Button
+                        aria-label={"Check the previous page in paginated data table"}
                         variant={"outline"}
                         className={"rounded-none border-y-0"}
                         onClick={() => table.previousPage()}
@@ -106,6 +111,7 @@ const ResultsDataTable = <TData, TValue>({
                         Previous Page
                     </Button>
                     <Button
+                        aria-label={"Check the next page in paginated data table"}
                         className={"rounded-br-none rounded-l-none border-y-0"}
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
