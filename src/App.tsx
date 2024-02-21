@@ -1,7 +1,7 @@
 import './App.css'
 import {useEffect, useState} from "react";
 import alasql from "alasql";
-import {DATA_FILES} from "./constants.ts";
+import {DATA} from "./constants.ts";
 import {useTablesStore} from "@/store/tablesStore.ts";
 import ResultsDataTable from "@/components/ResultsDataTable";
 import {Toaster} from "@/components/ui/sonner.tsx";
@@ -98,13 +98,10 @@ const App = () => {
 
     useEffect(() => {
         // Fetch the CSV files from /public/data/<filePath>
-        Promise.all(DATA_FILES.map(async ({fileName, tableName}) => {
-            const response = await fetch(`data/${fileName}`);
-            const csvData = await response.text();
-
+        Promise.all(DATA.map(async ({data, tableName}) => {
             // Create a table and insert the CSV file data into the table
             await alasql.promise(`CREATE TABLE ${tableName}`);
-            await alasql.promise(`INSERT INTO ${tableName} SELECT * FROM CSV(?, {headers: true, separator:","});`, [csvData]);
+            await alasql.promise(`INSERT INTO ${tableName} SELECT * FROM CSV(?, {headers: true, separator:","});`, [data]);
             addTable(tableName);
         })).then(() => {
             let startTime = performance.now();
