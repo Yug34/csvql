@@ -41,6 +41,14 @@ import CSVUpload from "@/components/CSVUpload.tsx";
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState<boolean>(false);
+    const toggleDialog = () => {
+        setIsUploadDialogOpen(prevState => !prevState)
+    };
+
+    useEffect(() => {
+        console.log(isUploadDialogOpen);
+    }, [isUploadDialogOpen]);
+
     const {addTable} = useTablesStore();
     const {
         query,
@@ -265,14 +273,11 @@ const App = () => {
                                             <Separator/>
                                         </CardHeader>
                                         <div>
-                                            <Dialog open={isUploadDialogOpen}>
+                                            <Dialog open={isUploadDialogOpen} onOpenChange={toggleDialog}>
                                                 <DialogTrigger asChild>
                                                     <Button
                                                         className={"flex gap-x-2 w-full rounded-none"}
                                                         variant="outline"
-                                                        onClick={() => {
-                                                            setIsUploadDialogOpen(true);
-                                                        }}
                                                     >
                                                         Import Data
                                                         <UploadIcon size={"1.25rem"}/>
