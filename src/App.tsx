@@ -77,17 +77,24 @@ const App = () => {
 
         alasql.promise(queryToRun ?? query)
             .then((data: Record<string, string>[]) => {
+                console.log("this ran")
                 if (data) {
-                    setData(data);
-                    setQueryError(null);
-                    toast.success(`Query executed! ${data.length ?? 0} rows returned in ${queryExecutionTime}ms!`);
-                    addPreviousQueries(queryToRun ?? query!);
-                    let endTime = performance.now()
-                    let timeElapsed = endTime - startTime;
-                    setQueryExecutionTime(roundNumber(timeElapsed));
+                    if (data.length === 0) {
+                        toast.error(`The query ran and returned nothing, are you sure the query was correct?`);
+                    } else {
+                        console.log("this ran too")
+                        setData(data);
+                        setQueryError(null);
+                        toast.success(`Query executed! ${data.length ?? 0} rows returned in ${queryExecutionTime}ms!`);
+                        addPreviousQueries(queryToRun ?? query!);
+                        let endTime = performance.now()
+                        let timeElapsed = endTime - startTime;
+                        setQueryExecutionTime(roundNumber(timeElapsed));
+                    }
                 }
             })
             .catch((err: { message: string }) => {
+                console.log("this ran three")
                 toast.error(err.message);
             });
     }
