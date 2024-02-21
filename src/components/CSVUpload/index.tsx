@@ -70,34 +70,9 @@ const CSVUpload = ({setIsUploadDialogOpen}: CSVUploadProps) => {
                                     setTableName(e.target.value);
                                 }}
                             />
-                            <ScrollArea className={"w-full max-w-full max-h-[400px]"}>
-                                <ScrollBar/>
-
-                                {/*<Table className={"w-fit max-w-fit"}>*/}
-                                {/*    <TableHeader>*/}
-                                {/*        <TableRow>*/}
-                                {/*            {Object.keys(queryData![0]).map((key) => (*/}
-                                {/*                <TableHead>{key}</TableHead>*/}
-                                {/*            ))}*/}
-                                {/*        </TableRow>*/}
-                                {/*    </TableHeader>*/}
-                                {/*    <TableBody>*/}
-                                {/*        {queryData?.map((row, index) => {*/}
-                                {/*            const keys = Object.keys(row);*/}
-                                {/*            return (*/}
-                                {/*                <TableRow key={row[keys[0]]}>*/}
-                                {/*                    {keys.map((key) => (*/}
-                                {/*                        <TableCell>{queryData[index][key]}</TableCell>*/}
-                                {/*                    ))}*/}
-                                {/*                </TableRow>*/}
-                                {/*            )*/}
-                                {/*        })}*/}
-                                {/*    </TableBody>*/}
-                                {/*</Table>*/}
-                                <Button className={"w-full mt-6"} onClick={createTable}>
-                                    Create table
-                                </Button>
-                            </ScrollArea>
+                            <Button className={"w-full mt-6"} onClick={createTable}>
+                                Create table
+                            </Button>
                         </CardContent>
                     </>
                 ) : (
