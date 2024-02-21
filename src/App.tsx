@@ -66,17 +66,16 @@ const App = () => {
         let startTime = performance.now();
 
         if (queryToRun) {
-            setQuery(queryToRun); // Sync query to the editor
+            setQuery(queryToRun); // Sync query with the editor
         }
 
         alasql.promise(queryToRun ?? query)
             .then((data: Record<string, string>[]) => {
-                console.log("this ran")
                 if (data) {
                     if (data.length === 0) {
-                        toast.error(`The query ran and returned nothing, are you sure the query was correct?`);
+                        toast.error(`The query result returned empty, are you sure the query was correct?`);
                     } else {
-                        console.log("this ran too")
+                        // Query successful!
                         setData(data);
                         setQueryError(null);
                         toast.success(`Query executed! ${data.length ?? 0} rows returned in ${queryExecutionTime}ms!`);
@@ -88,30 +87,30 @@ const App = () => {
                 }
             })
             .catch((err: { message: string }) => {
-                console.log("this ran three")
                 toast.error(err.message);
             });
     }
 
     const exportDataToCSV = () => {
         alasql.promise('SELECT * INTO CSV("output.csv", {headers:false}) FROM ?', [data])
-            .then(() => {
-                toast.success("Data downloaded as CSV!");
-            })
-            .catch((err) => {
-                toast.error("Error saving data: ", err);
-            });
+            .then(() => toast.success("Data downloaded as CSV!"))
+            .catch((err) => toast.error("Error saving data: ", err))
     }
 
     useEffect(() => {
+        // Fetch the CSV files from /public/data/<filePath>
         Promise.all(DATA_FILES.map(async ({fileName, tableName}) => {
             const response = await fetch(`data/${fileName}`);
             const csvData = await response.text();
+
+            // Create a table and insert the CSV file data into the table
             await alasql.promise(`CREATE TABLE ${tableName}`);
             await alasql.promise(`INSERT INTO ${tableName} SELECT * FROM CSV(?, {headers: true, separator:","});`, [csvData]);
             addTable(tableName);
         })).then(() => {
             let startTime = performance.now();
+
+            // select * from employees and display it in the Data Table, measure query execution time.
             const query = `-- Enter SQL Query here:\nSELECT * FROM employees`;
             setQuery(query);
             setData(alasql(query));
@@ -135,8 +134,10 @@ const App = () => {
                                     <CardDescription>Click to execute</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <SampleQueries executeQuery={executeQuery}
-                                                   setIsSampleQuerySheetOpen={setIsSampleQuerySheetOpen}/>
+                                    <SampleQueries
+                                        executeQuery={executeQuery}
+                                        setIsSampleQuerySheetOpen={setIsSampleQuerySheetOpen}
+                                    />
                                 </CardContent>
                             </Card>
                             <Card className={"h-1/2 max-h-1/2 border-t-0 rounded-t-none"}>
@@ -196,8 +197,10 @@ const App = () => {
                                         <Card className={"mt-4"}>
                                             <ScrollArea className={"max-h-full"}>
                                                 <CardContent className={"p-4 max-h-52 flex flex-col gap-y-2"}>
-                                                    <PreviousQueriesList executeQuery={executeQuery}
-                                                                         setIsPrevQuerySheetOpen={setIsPrevQuerySheetOpen}/>
+                                                    <PreviousQueriesList
+                                                        executeQuery={executeQuery}
+                                                        setIsPrevQuerySheetOpen={setIsPrevQuerySheetOpen}
+                                                    />
                                                 </CardContent>
                                                 <ScrollBar/>
                                             </ScrollArea>
@@ -211,10 +214,7 @@ const App = () => {
                             <div className={"flex w-full"}>
                                 <Dialog open={isUploadDialogOpen} onOpenChange={toggleDialog}>
                                     <DialogTrigger asChild>
-                                        <Button
-                                            className={"w-full rounded-r-none flex gap-x-2"}
-                                            variant="outline"
-                                        >
+                                        <Button className={"w-full rounded-r-none flex gap-x-2"} variant="outline">
                                             Import Data
                                             <UploadIcon size={"1.25rem"}/>
                                         </Button>
@@ -223,10 +223,7 @@ const App = () => {
                                         <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen}/>
                                     </DialogContent>
                                 </Dialog>
-                                <Button
-                                    className={"flex gap-x-2 w-full rounded-l-none"}
-                                    onClick={exportDataToCSV}
-                                >
+                                <Button className={"flex gap-x-2 w-full rounded-l-none"} onClick={exportDataToCSV}>
                                     Export Data as CSV
                                     <DownloadIcon size={"1.25rem"}/>
                                 </Button>
