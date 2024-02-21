@@ -57,10 +57,10 @@ const App = () => {
         setIsSampleQuerySheetOpen(isOpen => !isOpen)
     };
 
-    const { addTable } = useTablesStore();
-    const { query, setQuery, data, setData, setQueryError } = useAlasqlStore();
+    const {addTable} = useTablesStore();
+    const {query, setQuery, data, setData, setQueryError} = useAlasqlStore();
 
-    const { addPreviousQueries, queryExecutionTime, setQueryExecutionTime } = useQueryMetadataStore();
+    const {addPreviousQueries, queryExecutionTime, setQueryExecutionTime} = useQueryMetadataStore();
 
     const executeQuery = (queryToRun?: string) => {
         let startTime = performance.now();
@@ -135,17 +135,21 @@ const App = () => {
                                     <CardDescription>Click to execute</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <SampleQueries executeQuery={executeQuery} setIsSampleQuerySheetOpen={setIsSampleQuerySheetOpen}/>
+                                    <SampleQueries executeQuery={executeQuery}
+                                                   setIsSampleQuerySheetOpen={setIsSampleQuerySheetOpen}/>
                                 </CardContent>
                             </Card>
-                            <Card className={"h-1/2 min-h-1/2 border-t-0 rounded-t-none"}>
-                                <ScrollArea className={"max-h-full"}>
+                            <Card className={"h-1/2 max-h-1/2 border-t-0 rounded-t-none"}>
+                                <ScrollArea className={"h-full"}>
                                     <CardHeader>
                                         <CardTitle>Previous Queries</CardTitle>
                                         <CardDescription>Click to execute</CardDescription>
                                     </CardHeader>
                                     <CardContent className={"flex flex-col gap-y-2"}>
-                                        <PreviousQueriesList executeQuery={executeQuery} setIsPrevQuerySheetOpen={setIsPrevQuerySheetOpen}/>
+                                        <PreviousQueriesList
+                                            executeQuery={executeQuery}
+                                            setIsPrevQuerySheetOpen={setIsPrevQuerySheetOpen}
+                                        />
                                     </CardContent>
                                     <ScrollBar/>
                                 </ScrollArea>
@@ -170,7 +174,8 @@ const App = () => {
                                         </SheetHeader>
                                         <Card className={"mt-4"}>
                                             <CardContent className={"p-4 max-h-52 flex flex-col gap-y-2"}>
-                                                <SampleQueries executeQuery={executeQuery} setIsSampleQuerySheetOpen={setIsSampleQuerySheetOpen}/>
+                                                <SampleQueries executeQuery={executeQuery}
+                                                               setIsSampleQuerySheetOpen={setIsSampleQuerySheetOpen}/>
                                             </CardContent>
                                         </Card>
                                     </SheetContent>
@@ -191,7 +196,8 @@ const App = () => {
                                         <Card className={"mt-4"}>
                                             <ScrollArea className={"max-h-full"}>
                                                 <CardContent className={"p-4 max-h-52 flex flex-col gap-y-2"}>
-                                                    <PreviousQueriesList executeQuery={executeQuery} setIsPrevQuerySheetOpen={setIsPrevQuerySheetOpen}/>
+                                                    <PreviousQueriesList executeQuery={executeQuery}
+                                                                         setIsPrevQuerySheetOpen={setIsPrevQuerySheetOpen}/>
                                                 </CardContent>
                                                 <ScrollBar/>
                                             </ScrollArea>
@@ -214,7 +220,7 @@ const App = () => {
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent className="p-0 border-none">
-                                        <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen} />
+                                        <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen}/>
                                     </DialogContent>
                                 </Dialog>
                                 <Button
