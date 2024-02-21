@@ -1,7 +1,7 @@
 import './App.css'
 import {useEffect, useState} from "react";
 import alasql from "alasql";
-import {DATA_FILES, SAMPLE_QUERIES} from "./constants.ts";
+import {DATA_FILES} from "./constants.ts";
 import {useTablesStore} from "@/store/tablesStore.ts";
 import ResultsDataTable from "@/components/ResultsDataTable";
 import {Toaster} from "@/components/ui/sonner.tsx";
@@ -32,12 +32,13 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import {roundNumber, stripQueryOfComments} from "@/lib/utils.ts";
-import {Separator} from "@/components/ui/separator.tsx";
-import {DownloadIcon, Loader2, PlayIcon, UploadIcon} from "lucide-react";
+import {roundNumber} from "@/lib/utils.ts";
+import {DownloadIcon, Loader2, UploadIcon} from "lucide-react";
 import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area.tsx";
 import CSVUpload from "@/components/CSVUpload";
 import {useQueryMetadataStore} from "@/store/queryMetadataStore.ts";
+import PreviousQueriesList from "@/components/PreviousQueries.tsx";
+import SampleQueries from "@/components/SampleQueries.tsx";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -59,7 +60,7 @@ const App = () => {
     const { addTable } = useTablesStore();
     const { query, setQuery, data, setData, setQueryError } = useAlasqlStore();
 
-    const { addPreviousQueries, previousQueries, queryExecutionTime, setQueryExecutionTime } = useQueryMetadataStore();
+    const { addPreviousQueries, queryExecutionTime, setQueryExecutionTime } = useQueryMetadataStore();
 
     const executeQuery = (queryToRun?: string) => {
         let startTime = performance.now();
@@ -121,65 +122,6 @@ const App = () => {
         });
     }, []);
 
-    const SampleQueriesList = () => {
-        return (
-            <>
-                {SAMPLE_QUERIES.map(({query, queryName}) => (
-                    <ScrollArea key={queryName}>
-                        <Card className={"p-2"}>
-                            <div
-                                className={"flex w-full items-center font-semibold justify-between"}>
-                                <div className={"text-sm"}>
-                                    {queryName}
-                                </div>
-                                <Button
-                                    variant={"outline"}
-                                    className={"p-2"}
-                                    onClick={() => {
-                                        setIsSampleQuerySheetOpen(false);
-                                        executeQuery(query)
-                                    }}
-                                >
-                                    <PlayIcon className={"ml-1"} size={"1.25rem"}/>
-                                </Button>
-                            </div>
-                            <Separator className={"my-2"}/>
-                            <code className={"text-xs"}>{query}</code>
-                        </Card>
-                    </ScrollArea>
-                ))}
-            </>
-        )
-    }
-
-    const PreviousQueriesList = () => {
-        return (
-            <>
-                {previousQueries.length === 0 ? (
-                    <>Nothing to see here! Please run a query to see it in history.</>
-                ) : (
-                    <>
-                        {previousQueries.map(query => (
-                            <div className={"flex justify-between items-center border rounded-md p-2"} key={query}>
-                                <code className={"text-xs"}>{stripQueryOfComments(query)}</code>
-                                <Button
-                                    variant={"outline"}
-                                    className={"p-2"}
-                                    onClick={() => {
-                                        setIsPrevQuerySheetOpen(false);
-                                        executeQuery(query)
-                                    }}
-                                >
-                                    <PlayIcon className={"ml-1"} size={"1.25rem"}/>
-                                </Button>
-                            </div>
-                        ))}
-                    </>
-                )}
-            </>
-        )
-    }
-
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <div className={"w-screen h-screen flex flex-col max-w-screen max-h-screen overflow-x-hidden"}>
@@ -193,7 +135,7 @@ const App = () => {
                                     <CardDescription>Click to execute</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <SampleQueriesList/>
+                                    <SampleQueries executeQuery={executeQuery} setIsSampleQuerySheetOpen={setIsSampleQuerySheetOpen}/>
                                 </CardContent>
                             </Card>
                             <Card className={"h-1/2 min-h-1/2 border-t-0 rounded-t-none"}>
@@ -203,7 +145,7 @@ const App = () => {
                                         <CardDescription>Click to execute</CardDescription>
                                     </CardHeader>
                                     <CardContent className={"flex flex-col gap-y-2"}>
-                                        <PreviousQueriesList/>
+                                        <PreviousQueriesList executeQuery={executeQuery} setIsPrevQuerySheetOpen={setIsPrevQuerySheetOpen}/>
                                     </CardContent>
                                     <ScrollBar/>
                                 </ScrollArea>
@@ -228,7 +170,7 @@ const App = () => {
                                         </SheetHeader>
                                         <Card className={"mt-4"}>
                                             <CardContent className={"p-4 max-h-52 flex flex-col gap-y-2"}>
-                                                <SampleQueriesList/>
+                                                <SampleQueries executeQuery={executeQuery} setIsSampleQuerySheetOpen={setIsSampleQuerySheetOpen}/>
                                             </CardContent>
                                         </Card>
                                     </SheetContent>
@@ -249,7 +191,7 @@ const App = () => {
                                         <Card className={"mt-4"}>
                                             <ScrollArea className={"max-h-full"}>
                                                 <CardContent className={"p-4 max-h-52 flex flex-col gap-y-2"}>
-                                                    <PreviousQueriesList/>
+                                                    <PreviousQueriesList executeQuery={executeQuery} setIsPrevQuerySheetOpen={setIsPrevQuerySheetOpen}/>
                                                 </CardContent>
                                                 <ScrollBar/>
                                             </ScrollArea>
@@ -258,9 +200,7 @@ const App = () => {
                                 </Sheet>
                             </div>
 
-                            {/*<div className={"flex flex-row w-full h-1/2 max-h-[50%] gap-x-6"}>*/}
-                                <SQLEditor/>
-                            {/*</div>*/}
+                            <SQLEditor/>
 
                             <div className={"flex w-full"}>
                                 <Dialog open={isUploadDialogOpen} onOpenChange={toggleDialog}>

@@ -10,8 +10,8 @@ export const roundNumber = (num: number) => {
   // return num.toFixed(2);
 }
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+export const cn = (...inputs: ClassValue[]) => {
+  return twMerge(clsx(inputs));
 }
 
 export const stripQueryOfComments = (query: string) => {
