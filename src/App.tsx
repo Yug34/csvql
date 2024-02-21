@@ -45,6 +45,16 @@ const App = () => {
         setIsUploadDialogOpen(prevState => !prevState)
     };
 
+    const [isPrevQuerySheetOpen, setIsPrevQuerySheetOpen] = useState<boolean>(false);
+    const togglePrevQuerySheet = () => {
+        setIsPrevQuerySheetOpen(prevState => !prevState)
+    };
+
+    const [isSampleQuerySheetOpen, setIsSampleQuerySheetOpen] = useState<boolean>(false);
+    const toggleSampleQuerySheet = () => {
+        setIsSampleQuerySheetOpen(prevState => !prevState)
+    };
+
     const {addTable} = useTablesStore();
     const {
         query,
@@ -125,7 +135,10 @@ const App = () => {
                                 <Button
                                     variant={"outline"}
                                     className={"p-2"}
-                                    onClick={() => executeQuery(query)}
+                                    onClick={() => {
+                                        setIsSampleQuerySheetOpen(false);
+                                        executeQuery(query)
+                                    }}
                                 >
                                     <PlayIcon className={"ml-1"} size={"1.25rem"}/>
                                 </Button>
@@ -152,7 +165,10 @@ const App = () => {
                                 <Button
                                     variant={"outline"}
                                     className={"p-2"}
-                                    onClick={() => executeQuery(query)}
+                                    onClick={() => {
+                                        setIsPrevQuerySheetOpen(false);
+                                        executeQuery(query)
+                                    }}
                                 >
                                     <PlayIcon className={"ml-1"} size={"1.25rem"}/>
                                 </Button>
@@ -197,7 +213,7 @@ const App = () => {
                         <div className={"w-full max-w-full xl:w-4/5 xl:max-w-4/5 flex flex-col gap-y-6"}>
                             <Button onClick={() => executeQuery()}>Run query</Button>
                             <div className={"flex w-full xl:hidden"}>
-                                <Sheet>
+                                <Sheet open={isSampleQuerySheetOpen} onOpenChange={toggleSampleQuerySheet}>
                                     <SheetTrigger className={"w-full"}>
                                         <Button className={"w-full rounded-r-none"}>
                                             View sample queries
@@ -217,7 +233,7 @@ const App = () => {
                                         </Card>
                                     </SheetContent>
                                 </Sheet>
-                                <Sheet>
+                                <Sheet open={isPrevQuerySheetOpen} onOpenChange={togglePrevQuerySheet}>
                                     <SheetTrigger className={"w-full"}>
                                         <Button variant={"outline"} className={"w-full rounded-l-none"}>
                                             View previous queries
