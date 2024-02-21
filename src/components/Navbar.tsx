@@ -1,4 +1,4 @@
-import {ModeToggle} from "@/components/theme-toggler.tsx";
+import {ModeToggle} from "@/components/ui/theme-toggler.tsx";
 
 export default function Navbar() {
     return (

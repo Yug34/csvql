@@ -7,7 +7,7 @@ import {ResultsDataTable} from "@/components/ResultsDataTable.tsx";
 import {Toaster} from "@/components/ui/sonner.tsx";
 import {useAlasqlStore} from "@/store/alasqlStore.ts";
 import {SQLEditor} from "@/components/SQLEditor.tsx";
-import {ThemeProvider} from "@/components/theme-provider.tsx";
+import {ThemeProvider} from "@/components/ui/theme-provider.tsx";
 import Navbar from "@/components/Navbar.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {toast} from "sonner";
@@ -43,20 +43,20 @@ const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState<boolean>(false);
     const toggleDialog = () => {
-        setIsUploadDialogOpen(prevState => !prevState)
+        setIsUploadDialogOpen(isOpen => !isOpen)
     };
 
     const [isPrevQuerySheetOpen, setIsPrevQuerySheetOpen] = useState<boolean>(false);
     const togglePrevQuerySheet = () => {
-        setIsPrevQuerySheetOpen(prevState => !prevState)
+        setIsPrevQuerySheetOpen(isOpen => !isOpen)
     };
 
     const [isSampleQuerySheetOpen, setIsSampleQuerySheetOpen] = useState<boolean>(false);
     const toggleSampleQuerySheet = () => {
-        setIsSampleQuerySheetOpen(prevState => !prevState)
+        setIsSampleQuerySheetOpen(isOpen => !isOpen)
     };
 
-    const {addTable} = useTablesStore();
+    const { addTable } = useTablesStore();
     const { query, setQuery, data, setData, setQueryError } = useAlasqlStore();
 
     const { addPreviousQueries, previousQueries, queryExecutionTime, setQueryExecutionTime } = useQueryMetadataStore();

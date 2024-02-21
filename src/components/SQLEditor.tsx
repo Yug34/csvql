@@ -3,7 +3,7 @@ import "ace-builds/src-noconflict/mode-sql";
 import "ace-builds/src-noconflict/theme-github.js";
 import "ace-builds/src-noconflict/theme-twilight.js";
 import {useAlasqlStore} from "@/store/alasqlStore.ts";
-import {useTheme} from "@/components/theme-provider.tsx";
+import {useTheme} from "@/components/ui/theme-provider.tsx";
 
 export const SQLEditor = () => {
     const {query, setQuery} = useAlasqlStore();
