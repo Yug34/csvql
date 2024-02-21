@@ -13,7 +13,14 @@ import {
     useReactTable,
     getPaginationRowModel
 } from "@tanstack/react-table"
-
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
     HoverCard,
     HoverCardTrigger,
@@ -36,9 +43,9 @@ interface ResultsDataTableProps<TData, TValue> {
 }
 
 export function ResultsDataTable<TData, TValue>({
-    columns,
-    data,
-}: ResultsDataTableProps<TData, TValue>) {
+                                                    columns,
+                                                    data,
+                                                }: ResultsDataTableProps<TData, TValue>) {
     const table = useReactTable({
         data,
         columns,
@@ -57,48 +64,84 @@ export function ResultsDataTable<TData, TValue>({
             <div className="flex items-center justify-end space-x-2">
                 <ScrollArea className={"mr-auto whitespace-nowrap"}>
                     <div className={"flex w-fit items-center"}>
-                        <HoverCard openDelay={100} closeDelay={100}>
-                            <HoverCardTrigger>
-                                <InfoIcon className={"inline m-0 w-4 h-4 mx-4"}/>
-                            </HoverCardTrigger>
-                            <HoverCardContent className={"whitespace-normal"}>
-                                Click on any of these table names to view the data
-                            </HoverCardContent>
-                        </HoverCard>
+                        {tables.length >= 4 ? (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <Button className={"rounded-r-none rounded-bl-none"}>View all tables</Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <ScrollArea className={"h-52 max-h-52"}>
+                                        <DropdownMenuLabel>Tables</DropdownMenuLabel>
+                                        <DropdownMenuSeparator/>
+                                        {tables.map(table => {
+                                            const isTableInQuery = query!.includes(table);
+                                            return (
+                                                <DropdownMenuItem key={table} className={"p-0"}>
+                                                    <Button
+                                                        variant={"ghost"}
+                                                        className={`w-full h-full rounded-none ${isTableInQuery && "font-semibold underline underline-offset-4"}`}
+                                                        onClick={() => {
+                                                            const query = `SELECT * FROM ${table}`
+                                                            setQuery(query);
+                                                            setData(alasql(query));
+                                                        }}
+                                                    >
+                                                        {table}
+                                                    </Button>
+                                                </DropdownMenuItem>
+                                            )
+                                        })}
+                                        <ScrollBar/>
+                                    </ScrollArea>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        ) : (
+                            <>
+                                <HoverCard openDelay={100} closeDelay={100}>
+                                    <HoverCardTrigger>
+                                        <InfoIcon className={"inline m-0 w-4 h-4 mx-4"}/>
+                                    </HoverCardTrigger>
+                                    <HoverCardContent className={"whitespace-normal"}>
+                                        Click on any of these table names to view the data
+                                    </HoverCardContent>
+                                </HoverCard>
 
-                        {tables.map(table => {
-                            const isTableInQuery = query!.includes(table);
-                            return (
-                                <Button
-                                    variant={"ghost"}
-                                    className={`rounded-none ${isTableInQuery && "font-semibold underline underline-offset-4"}`}
-                                    key={table}
-                                    onClick={() => {
-                                        const query = `SELECT * FROM ${table}`
-                                        setQuery(query);
-                                        setData(alasql(query));
-                                    }}
-                                >
-                                    {table}
-                                </Button>
-                            )
-                        })}
+                                {tables.map(table => {
+                                    const isTableInQuery = query!.includes(table);
+                                    return (
+                                        <Button
+                                            variant={"ghost"}
+                                            className={`rounded-none ${isTableInQuery && "font-semibold underline underline-offset-4"}`}
+                                            key={table}
+                                            onClick={() => {
+                                                const query = `SELECT * FROM ${table}`
+                                                setQuery(query);
+                                                setData(alasql(query));
+                                            }}
+                                        >
+                                            {table}
+                                        </Button>
+                                    )
+                                })}
+                            </>
+                        )}
                     </div>
                 </ScrollArea>
-                <div className={"flex w-fit min-w-fit gap-x-2"}>
+                <div className={"flex w-fit min-w-fit"}>
                     <Button
-                        size="sm"
+                        variant={"outline"}
+                        className={"rounded-none border-y-0"}
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
-                        Previous
+                        Previous Page
                     </Button>
                     <Button
-                        size="sm"
+                        className={"rounded-br-none rounded-l-none border-y-0"}
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
                     >
-                        Next
+                        Next Page
                     </Button>
                 </div>
             </div>
