@@ -45,10 +45,6 @@ const App = () => {
         setIsUploadDialogOpen(prevState => !prevState)
     };
 
-    useEffect(() => {
-        console.log(isUploadDialogOpen);
-    }, [isUploadDialogOpen]);
-
     const {addTable} = useTablesStore();
     const {
         query,
@@ -74,7 +70,7 @@ const App = () => {
                 if (data) {
                     setData(data);
                     setQueryError(null);
-                    toast.success("Query executed!");
+                    toast.success(`Query executed! ${data.length ?? 0} rows returned in ${queryExecutionTime}ms!`);
                     addPreviousQueries(queryToRun ?? query!);
                     let endTime = performance.now()
                     let timeElapsed = endTime - startTime;
@@ -147,17 +143,12 @@ const App = () => {
         return (
             <>
                 {previousQueries.length === 0 ? (
-                    <>
-                        Nothing to see here! Please run a query to see it in history.
-                    </>
+                    <>Nothing to see here! Please run a query to see it in history.</>
                 ) : (
                     <>
                         {previousQueries.map(query => (
-                            <div
-                                className={"flex justify-between items-center border rounded-md p-2"}
-                                key={query}>
-                                <code
-                                    className={"text-xs"}>{stripQueryOfComments(query)}</code>
+                            <div className={"flex justify-between items-center border rounded-md p-2"} key={query}>
+                                <code className={"text-xs"}>{stripQueryOfComments(query)}</code>
                                 <Button
                                     variant={"outline"}
                                     className={"p-2"}
@@ -205,7 +196,6 @@ const App = () => {
 
                         <div className={"w-full max-w-full xl:w-4/5 xl:max-w-4/5 flex flex-col gap-y-6"}>
                             <Button onClick={() => executeQuery()}>Run query</Button>
-
                             <div className={"flex w-full xl:hidden"}>
                                 <Sheet>
                                     <SheetTrigger className={"w-full"}>
@@ -252,51 +242,32 @@ const App = () => {
                                 </Sheet>
                             </div>
 
-                            <div className={"flex flex-row w-full h-1/2 max-h-[50%] gap-x-6"}>
+                            {/*<div className={"flex flex-row w-full h-1/2 max-h-[50%] gap-x-6"}>*/}
                                 <SQLEditor/>
+                            {/*</div>*/}
 
-                                <Card className={"w-1/2"}>
-                                    <CardContent className={"p-0 flex flex-col justify-between h-full"}>
-                                        <CardHeader className={"flex justify-center p-0"}>
-                                            <CardTitle className={"p-4"}>Query Metadata</CardTitle>
-                                            <div className={"flex flex-col p-4 gap-y-2"}>
-                                                <div className={"flex justify-between"}>
-                                                    <span>Execution time</span>
-                                                    <span>{queryExecutionTime ?? 0}ms</span>
-                                                </div>
-                                                <Separator/>
-                                                <div className={"flex justify-between"}>
-                                                    <span>Rows returned</span>
-                                                    <span>{data?.length ?? 0}</span>
-                                                </div>
-                                            </div>
-                                            <Separator/>
-                                        </CardHeader>
-                                        <div>
-                                            <Dialog open={isUploadDialogOpen} onOpenChange={toggleDialog}>
-                                                <DialogTrigger asChild>
-                                                    <Button
-                                                        className={"flex gap-x-2 w-full rounded-none"}
-                                                        variant="outline"
-                                                    >
-                                                        Import Data
-                                                        <UploadIcon size={"1.25rem"}/>
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent className="p-0 border-none">
-                                                    <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen}/>
-                                                </DialogContent>
-                                            </Dialog>
-                                            <Button
-                                                className={"flex gap-x-2 w-full rounded-none rounded-b-lg"}
-                                                onClick={exportDataToCSV}
-                                            >
-                                                Export Data as CSV
-                                                <DownloadIcon size={"1.25rem"}/>
-                                            </Button>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                            <div className={"flex w-full"}>
+                                <Dialog open={isUploadDialogOpen} onOpenChange={toggleDialog}>
+                                    <DialogTrigger asChild>
+                                        <Button
+                                            className={"w-full rounded-r-none flex gap-x-2"}
+                                            variant="outline"
+                                        >
+                                            Import Data
+                                            <UploadIcon size={"1.25rem"}/>
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="p-0 border-none">
+                                        <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen}/>
+                                    </DialogContent>
+                                </Dialog>
+                                <Button
+                                    className={"flex gap-x-2 w-full rounded-l-none"}
+                                    onClick={exportDataToCSV}
+                                >
+                                    Export Data as CSV
+                                    <DownloadIcon size={"1.25rem"}/>
+                                </Button>
                             </div>
 
                             <div className={"w-full h-1/2 max-h-[50%]"}>
