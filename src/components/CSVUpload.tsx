@@ -10,18 +10,19 @@ import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area.tsx";
 import {useTablesStore} from "@/store/tablesStore.ts";
 import {useAlasqlStore} from "@/store/alasqlStore.ts";
 import {roundNumber} from "@/lib/utils.ts";
+import {useQueryMetadataStore} from "@/store/queryMetadataStore.ts";
 
 interface CSVUploadProps {
     setIsUploadDialogOpen: (isOpen: boolean) => void;
 }
 
-export default function CSVUpload({setIsUploadDialogOpen}: CSVUploadProps) {
+const CSVUpload = ({setIsUploadDialogOpen}: CSVUploadProps) => {
     const [csvData, setCSVData] = useState<null | string>(null);
     const [tableName, setTableName] = useState<string>("");
-    // const [queryData, setQueryData] = useState<null | Record<string, string>[]>(null);
 
     const {addTable} = useTablesStore();
-    const {setQuery, setData, setQueryExecutionTime} = useAlasqlStore();
+    const {setQuery, setData} = useAlasqlStore();
+    const {setQueryExecutionTime} = useQueryMetadataStore();
 
     const getCSVDataFromFile = (event: ChangeEvent) => {
         const file = (event.target as HTMLInputElement).files![0];
@@ -30,8 +31,6 @@ export default function CSVUpload({setIsUploadDialogOpen}: CSVUploadProps) {
         reader.onload = async (e) => {
             const contents = e.target!.result as string;
             setCSVData(contents);
-            // TODO: Needed for table
-            //  setQueryData(alasql("SELECT * FROM CSV(?, {headers: true, separator:\",\"})", [contents]));
         };
 
         reader.readAsText(file);
@@ -139,3 +138,4 @@ export default function CSVUpload({setIsUploadDialogOpen}: CSVUploadProps) {
         </div>
     );
 }
+export default CSVUpload;

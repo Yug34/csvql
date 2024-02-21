@@ -37,6 +37,7 @@ import {Separator} from "@/components/ui/separator.tsx";
 import {DownloadIcon, Loader2, PlayIcon, UploadIcon} from "lucide-react";
 import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area.tsx";
 import CSVUpload from "@/components/CSVUpload.tsx";
+import {useQueryMetadataStore} from "@/store/queryMetadataStore.ts";
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -56,17 +57,9 @@ const App = () => {
     };
 
     const {addTable} = useTablesStore();
-    const {
-        query,
-        setQuery,
-        data,
-        setData,
-        setQueryError,
-        addPreviousQueries,
-        previousQueries,
-        queryExecutionTime,
-        setQueryExecutionTime
-    } = useAlasqlStore();
+    const { query, setQuery, data, setData, setQueryError } = useAlasqlStore();
+
+    const { addPreviousQueries, previousQueries, queryExecutionTime, setQueryExecutionTime } = useQueryMetadataStore();
 
     const executeQuery = (queryToRun?: string) => {
         let startTime = performance.now();

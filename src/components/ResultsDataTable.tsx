@@ -43,9 +43,9 @@ interface ResultsDataTableProps<TData, TValue> {
 }
 
 export function ResultsDataTable<TData, TValue>({
-                                                    columns,
-                                                    data,
-                                                }: ResultsDataTableProps<TData, TValue>) {
+    columns,
+    data,
+}: ResultsDataTableProps<TData, TValue>) {
     const table = useReactTable({
         data,
         columns,
@@ -61,7 +61,7 @@ export function ResultsDataTable<TData, TValue>({
 
     return (
         <div className="rounded-md border md:mb-0 h-fit max-h-fit md:max-h md:max-h-full w-full max-w-screen">
-            <div className="flex items-center justify-end space-x-2">
+            <div className="flex items-center justify-end">
                 <ScrollArea className={"mr-auto whitespace-nowrap"}>
                     <div className={"flex w-fit items-center"}>
                         {tables.length >= 4 ? (
