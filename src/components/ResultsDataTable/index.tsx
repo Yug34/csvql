@@ -153,7 +153,7 @@ const ResultsDataTable = <TData, TValue>({
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
                                             <HoverCard>
-                                                <HoverCardTrigger>
+                                                <HoverCardTrigger asChild>
                                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </HoverCardTrigger>
                                                 <HoverCardContent
