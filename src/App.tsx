@@ -59,7 +59,6 @@ const App = () => {
 
     const {addTable} = useTablesStore();
     const {query, setQuery, data, setData, setQueryError} = useAlasqlStore();
-
     const {addPreviousQueries, queryExecutionTime, setQueryExecutionTime} = useQueryMetadataStore();
 
     const executeQuery = (queryToRun?: string) => {
@@ -110,7 +109,7 @@ const App = () => {
         })).then(() => {
             let startTime = performance.now();
 
-            // select * from employees and display it in the Data Table, measure query execution time.
+            // select * from employees and display it in the Data Table, and measure query execution time.
             const query = `-- Enter SQL Query here:\nSELECT * FROM employees`;
             setQuery(query);
             setData(alasql(query));
@@ -181,6 +180,7 @@ const App = () => {
                                         </Card>
                                     </SheetContent>
                                 </Sheet>
+
                                 <Sheet open={isPrevQuerySheetOpen} onOpenChange={togglePrevQuerySheet}>
                                     <SheetTrigger className={"w-full"}>
                                         <Button variant={"outline"} className={"w-full rounded-l-none"}>
