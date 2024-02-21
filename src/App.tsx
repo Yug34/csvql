@@ -76,23 +76,17 @@ const App = () => {
             .catch((err: { message: string }) => {
                 toast.error(err.message);
             });
-
     }
 
     const exportDataToCSV = () => {
         alasql.promise('SELECT * INTO CSV("output.csv", {headers:false}) FROM ?', [data])
             .then(() => {
                 toast.success("Data downloaded as CSV!");
-            }).catch((err) => {
-            toast.error("Error saving data: ", err);
-        });
+            })
+            .catch((err) => {
+                toast.error("Error saving data: ", err);
+            });
     }
-
-    useEffect(() => {
-        if (data !== null) {
-            setIsLoaded(true);
-        }
-    }, [data]);
 
     useEffect(() => {
         Promise.all(DATA_FILES.map(async ({fileName, tableName}) => {
@@ -109,8 +103,67 @@ const App = () => {
             let endTime = performance.now()
             let timeElapsed = endTime - startTime;
             setQueryExecutionTime(roundNumber(timeElapsed));
+            setIsLoaded(true);
         });
     }, []);
+
+    const SampleQueriesList = () => {
+        return (
+            <>
+                {SAMPLE_QUERIES.map(({query, queryName}) => (
+                    <ScrollArea key={queryName}>
+                        <Card className={"p-2"}>
+                            <div
+                                className={"flex w-full items-center font-semibold justify-between"}>
+                                <div className={"text-sm"}>
+                                    {queryName}
+                                </div>
+                                <Button
+                                    variant={"outline"}
+                                    className={"p-2"}
+                                    onClick={() => executeQuery(query)}
+                                >
+                                    <PlayIcon className={"ml-1"} size={"1.25rem"}/>
+                                </Button>
+                            </div>
+                            <Separator className={"my-2"}/>
+                            <code className={"text-xs"}>{query}</code>
+                        </Card>
+                    </ScrollArea>
+                ))}
+            </>
+        )
+    }
+
+    const PreviousQueriesList = () => {
+        return (
+            <>
+                {previousQueries.length === 0 ? (
+                    <>
+                        Nothing to see here! Please run a query to see it in history.
+                    </>
+                ) : (
+                    <>
+                        {previousQueries.map(query => (
+                            <div
+                                className={"flex justify-between items-center border rounded-md p-2"}
+                                key={query}>
+                                <code
+                                    className={"text-xs"}>{stripQueryOfComments(query)}</code>
+                                <Button
+                                    variant={"outline"}
+                                    className={"p-2"}
+                                    onClick={() => executeQuery(query)}
+                                >
+                                    <PlayIcon className={"ml-1"} size={"1.25rem"}/>
+                                </Button>
+                            </div>
+                        ))}
+                    </>
+                )}
+            </>
+        )
+    }
 
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -125,27 +178,7 @@ const App = () => {
                                     <CardDescription>Click to execute</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    {SAMPLE_QUERIES.map(({query, queryName}) => (
-                                        <ScrollArea key={queryName}>
-                                            <Card className={"p-2"}>
-                                                <div
-                                                    className={"flex w-full items-center font-semibold justify-between"}>
-                                                    <div className={"text-sm"}>
-                                                        {queryName}
-                                                    </div>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={"p-2"}
-                                                        onClick={() => executeQuery(query)}
-                                                    >
-                                                        <PlayIcon className={"ml-1"} size={"1.25rem"}/>
-                                                    </Button>
-                                                </div>
-                                                <Separator className={"my-2"}/>
-                                                <code className={"text-xs"}>{query}</code>
-                                            </Card>
-                                        </ScrollArea>
-                                    ))}
+                                    <SampleQueriesList/>
                                 </CardContent>
                             </Card>
                             <Card className={"h-1/2 min-h-1/2 border-t-0 rounded-t-none"}>
@@ -155,19 +188,7 @@ const App = () => {
                                         <CardDescription>Click to execute</CardDescription>
                                     </CardHeader>
                                     <CardContent className={"flex flex-col gap-y-2"}>
-                                        {previousQueries.map(query => (
-                                            <div className={"flex justify-between items-center border rounded-md p-2"}
-                                                 key={query}>
-                                                <code className={"text-xs"}>{stripQueryOfComments(query)}</code>
-                                                <Button
-                                                    variant={"outline"}
-                                                    className={"p-2"}
-                                                    onClick={() => executeQuery(query)}
-                                                >
-                                                    <PlayIcon className={"ml-1"} size={"1.25rem"}/>
-                                                </Button>
-                                            </div>
-                                        ))}
+                                        <PreviousQueriesList/>
                                     </CardContent>
                                     <ScrollBar/>
                                 </ScrollArea>
@@ -193,27 +214,7 @@ const App = () => {
                                         </SheetHeader>
                                         <Card className={"mt-4"}>
                                             <CardContent className={"p-4 max-h-52 flex flex-col gap-y-2"}>
-                                                {SAMPLE_QUERIES.map(({query, queryName}) => (
-                                                    <ScrollArea key={queryName}>
-                                                        <Card className={"p-2"}>
-                                                            <div
-                                                                className={"flex w-full items-center font-semibold justify-between"}>
-                                                                <div className={"text-sm"}>
-                                                                    {queryName}
-                                                                </div>
-                                                                <Button
-                                                                    variant={"outline"}
-                                                                    className={"p-2"}
-                                                                    onClick={() => executeQuery(query)}
-                                                                >
-                                                                    <PlayIcon className={"ml-1"} size={"1.25rem"}/>
-                                                                </Button>
-                                                            </div>
-                                                            <Separator className={"my-2"}/>
-                                                            <code className={"text-xs"}>{query}</code>
-                                                        </Card>
-                                                    </ScrollArea>
-                                                ))}
+                                                <SampleQueriesList/>
                                             </CardContent>
                                         </Card>
                                     </SheetContent>
@@ -234,19 +235,7 @@ const App = () => {
                                         <Card className={"mt-4"}>
                                             <ScrollArea className={"max-h-full"}>
                                                 <CardContent className={"p-4 max-h-52 flex flex-col gap-y-2"}>
-                                                    {previousQueries.map(query => (
-                                                        <div className={"flex justify-between items-center border rounded-md p-2"}
-                                                             key={query}>
-                                                            <code className={"text-xs"}>{stripQueryOfComments(query)}</code>
-                                                            <Button
-                                                                variant={"outline"}
-                                                                className={"p-2"}
-                                                                onClick={() => executeQuery(query)}
-                                                            >
-                                                                <PlayIcon className={"ml-1"} size={"1.25rem"}/>
-                                                            </Button>
-                                                        </div>
-                                                    ))}
+                                                    <PreviousQueriesList/>
                                                 </CardContent>
                                                 <ScrollBar/>
                                             </ScrollArea>
@@ -267,13 +256,13 @@ const App = () => {
                                                     <span>Execution time</span>
                                                     <span>{queryExecutionTime ?? 0}ms</span>
                                                 </div>
-                                                <Separator />
+                                                <Separator/>
                                                 <div className={"flex justify-between"}>
                                                     <span>Rows returned</span>
                                                     <span>{data?.length ?? 0}</span>
                                                 </div>
                                             </div>
-                                            <Separator />
+                                            <Separator/>
                                         </CardHeader>
                                         <div>
                                             <Dialog open={isUploadDialogOpen}>
