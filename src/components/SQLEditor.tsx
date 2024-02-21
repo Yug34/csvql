@@ -11,12 +11,12 @@ export const SQLEditor = () => {
 
     return (
         <AceEditor
-            style={{width: "100%", height: "100%"}}
             fontSize={"18px"}
             className="editorInput"
+            style={{width: "100%", height: "100%"}} // className styles won't apply
             placeholder="Enter SQL Query here"
             mode="sql"
-            theme={theme === "dark" ? "twilight" : "github"}
+            theme={theme === "dark" ? "twilight" : "github"} // light/dark mode equivalents
             showPrintMargin={true}
             showGutter={true}
             highlightActiveLine={true}

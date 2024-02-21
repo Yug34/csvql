@@ -27,7 +27,7 @@ import {
     HoverCardContent
 } from "@/components/ui/hover-card.tsx";
 import {ReactNode} from "react";
-import {CopyIcon, InfoIcon} from "lucide-react";
+import {CopyIcon} from "lucide-react";
 import {toast} from "sonner";
 import {copyTextToClipboard} from "@/lib/utils.ts";
 import {Button} from "@/components/ui/button.tsx";
@@ -42,10 +42,10 @@ interface ResultsDataTableProps<TData, TValue> {
     data: TData[]
 }
 
-export function ResultsDataTable<TData, TValue>({
+const ResultsDataTable = <TData, TValue>({
     columns,
     data,
-}: ResultsDataTableProps<TData, TValue>) {
+}: ResultsDataTableProps<TData, TValue>) => {
     const table = useReactTable({
         data,
         columns,
@@ -64,67 +64,36 @@ export function ResultsDataTable<TData, TValue>({
             <div className="flex items-center justify-end">
                 <ScrollArea className={"mr-auto whitespace-nowrap"}>
                     <div className={"flex w-fit items-center"}>
-                        {tables.length >= 4 ? (
-                            <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <Button className={"rounded-r-none rounded-bl-none"}>View all tables</Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <ScrollArea className={"h-52 max-h-52"}>
-                                        <DropdownMenuLabel>Tables</DropdownMenuLabel>
-                                        <DropdownMenuSeparator/>
-                                        {tables.map(table => {
-                                            const isTableInQuery = query!.includes(table);
-                                            return (
-                                                <DropdownMenuItem key={table} className={"p-0"}>
-                                                    <Button
-                                                        variant={"ghost"}
-                                                        className={`w-full h-full rounded-none ${isTableInQuery && "font-semibold underline underline-offset-4"}`}
-                                                        onClick={() => {
-                                                            const query = `SELECT * FROM ${table}`
-                                                            setQuery(query);
-                                                            setData(alasql(query));
-                                                        }}
-                                                    >
-                                                        {table}
-                                                    </Button>
-                                                </DropdownMenuItem>
-                                            )
-                                        })}
-                                        <ScrollBar/>
-                                    </ScrollArea>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        ) : (
-                            <>
-                                <HoverCard openDelay={100} closeDelay={100}>
-                                    <HoverCardTrigger>
-                                        <InfoIcon className={"inline m-0 w-4 h-4 mx-4"}/>
-                                    </HoverCardTrigger>
-                                    <HoverCardContent className={"whitespace-normal"}>
-                                        Click on any of these table names to view the data
-                                    </HoverCardContent>
-                                </HoverCard>
-
-                                {tables.map(table => {
-                                    const isTableInQuery = query!.includes(table);
-                                    return (
-                                        <Button
-                                            variant={"ghost"}
-                                            className={`rounded-none ${isTableInQuery && "font-semibold underline underline-offset-4"}`}
-                                            key={table}
-                                            onClick={() => {
-                                                const query = `SELECT * FROM ${table}`
-                                                setQuery(query);
-                                                setData(alasql(query));
-                                            }}
-                                        >
-                                            {table}
-                                        </Button>
-                                    )
-                                })}
-                            </>
-                        )}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger>
+                                <Button className={"rounded-r-none rounded-bl-none"}>Select table</Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <ScrollArea className={"h-52 max-h-52"}>
+                                    <DropdownMenuLabel>Tables</DropdownMenuLabel>
+                                    <DropdownMenuSeparator/>
+                                    {tables.map(table => {
+                                        const isTableInQuery = query!.includes(table);
+                                        return (
+                                            <DropdownMenuItem key={table} className={"p-0"}>
+                                                <Button
+                                                    variant={"ghost"}
+                                                    className={`w-full h-full rounded-none ${isTableInQuery && "font-semibold underline underline-offset-4"}`}
+                                                    onClick={() => {
+                                                        const query = `SELECT * FROM ${table}`
+                                                        setQuery(query);
+                                                        setData(alasql(query));
+                                                    }}
+                                                >
+                                                    {table}
+                                                </Button>
+                                            </DropdownMenuItem>
+                                        )
+                                    })}
+                                    <ScrollBar/>
+                                </ScrollArea>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </ScrollArea>
                 <div className={"flex w-fit min-w-fit"}>
@@ -184,8 +153,8 @@ export function ResultsDataTable<TData, TValue>({
                                                 <HoverCardContent
                                                     className={`cursor-pointer flex gap-x-2 w-fit max-w-[600px] truncate`}
                                                     onClick={() => {
-                                                        copyTextToClipboard(cell.getContext().getValue() as string)
-                                                        toast.success("Copied to clipboard!")
+                                                        copyTextToClipboard(cell.getContext().getValue() as string);
+                                                        toast.success("Copied to clipboard!");
                                                     }}
                                                 >
                                                     {cell.getContext().getValue() as ReactNode}
@@ -210,3 +179,5 @@ export function ResultsDataTable<TData, TValue>({
         </div>
     )
 }
+
+export default ResultsDataTable;

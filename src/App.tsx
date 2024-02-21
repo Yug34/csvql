@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import alasql from "alasql";
 import {DATA_FILES, SAMPLE_QUERIES} from "./constants.ts";
 import {useTablesStore} from "@/store/tablesStore.ts";
-import {ResultsDataTable} from "@/components/ResultsDataTable.tsx";
+import ResultsDataTable from "@/components/ResultsDataTable";
 import {Toaster} from "@/components/ui/sonner.tsx";
 import {useAlasqlStore} from "@/store/alasqlStore.ts";
 import {SQLEditor} from "@/components/SQLEditor.tsx";
@@ -36,7 +36,7 @@ import {roundNumber, stripQueryOfComments} from "@/lib/utils.ts";
 import {Separator} from "@/components/ui/separator.tsx";
 import {DownloadIcon, Loader2, PlayIcon, UploadIcon} from "lucide-react";
 import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area.tsx";
-import CSVUpload from "@/components/CSVUpload.tsx";
+import CSVUpload from "@/components/CSVUpload";
 import {useQueryMetadataStore} from "@/store/queryMetadataStore.ts";
 
 const App = () => {
@@ -274,7 +274,7 @@ const App = () => {
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent className="p-0 border-none">
-                                        <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen}/>
+                                        <CSVUpload setIsUploadDialogOpen={setIsUploadDialogOpen} />
                                     </DialogContent>
                                 </Dialog>
                                 <Button
