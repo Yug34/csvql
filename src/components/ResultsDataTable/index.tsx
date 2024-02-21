@@ -69,7 +69,9 @@ const ResultsDataTable = <TData, TValue>({
                                 <Button
                                     className={"rounded-r-none rounded-bl-none"}
                                     aria-label={"Open dropdown of tables available"}
-                                >Select table</Button>
+                                >
+                                    Show all table
+                                </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
                                 <ScrollArea className={"h-52 max-h-52"}>
