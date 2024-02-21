@@ -155,7 +155,11 @@ const ResultsDataTable = <TData, TValue>({
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
                                             <HoverCard>
-                                                <HoverCardTrigger asChild>
+                                                <HoverCardTrigger href={"#"} onClick={(e) => {
+                                                    e.preventDefault();
+                                                    copyTextToClipboard(cell.getContext().getValue() as string);
+                                                    toast.success("Copied to clipboard!");
+                                                }}>
                                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </HoverCardTrigger>
                                                 <HoverCardContent
