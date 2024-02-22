@@ -40,9 +40,9 @@ The most impactful optimizations you could do to a website for load time would c
 
 <hr/>
 
-## Walkthrough
+## Walkthrough video
 
-[screen-capture (5).webm](assets%2Fscreen-capture%20%285%29.webm)
+[Walkthrough video](https://github.com/Yug34/csvql/raw/master/assets/screen-capture%20(5).webm)
 
 ### Previews
 
