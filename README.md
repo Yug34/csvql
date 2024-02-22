@@ -40,6 +40,10 @@ The most impactful optimizations you could do to a website for load time would c
 
 <hr/>
 
+## Walkthrough
+
+[screen-capture (5).webm](assets%2Fscreen-capture%20%285%29.webm)
+
 ### Previews
 
 ![preview-light.png](assets%2Fpreview-light.png)
