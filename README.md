@@ -2,6 +2,8 @@
 
 A fully client-side app that allows you to make SQL queries on CSV data.
 
+Hosted [here](https://csvql.vercel.app) on Vercel.
+
 ## Feature set
 
 - Fully functioning SQL: Real-time queries, Joins, etc.
@@ -35,6 +37,8 @@ With resource caching disabled, as the Network tab below shows; the DOM content 
 ![waterfall.png](assets%2Fwaterfall.png)
 
 The most impactful optimizations you could do to a website for load time would come from optimizing images, this app didn't really have any but regardless [here's a blog](https://www.10xtech.io/blogs/web-perf) I wrote about using the apt images for performance.
+
+<hr/>
 
 ### Previews
 
