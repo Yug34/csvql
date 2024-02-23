@@ -6,7 +6,7 @@ Hosted [here](https://csvql.vercel.app) on Vercel.
 
 ## Feature set
 
-- Fully functioning SQL: Real-time queries, Joins, etc.
+- Fully functioning SQL: Real-time queries, Joins across CSV files, etc.
 - Import custom CSV files into the editor and query the file
 - Export query results as a CSV file
 - Tracking query history
@@ -22,7 +22,7 @@ Hosted [here](https://csvql.vercel.app) on Vercel.
 
 ## Performance and Optimizations
 
-Here's the LightHouse results, the dip in Accessibility is because of the `react-ace-editor`'s input fields not having associated labels.
+Here's the LightHouse results, the dip in Accessibility is because of `react-ace-editor`'s input fields not having associated labels.
 
 ![perf.png](assets%2Fperf.png)
 
