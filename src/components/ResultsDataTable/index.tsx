@@ -70,7 +70,7 @@ const ResultsDataTable = <TData, TValue>({
                                     className={"rounded-r-none rounded-bl-none"}
                                     aria-label={"Open dropdown of tables available"}
                                 >
-                                    Show all table
+                                    Show all tables
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
