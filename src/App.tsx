@@ -97,12 +97,47 @@ const App = () => {
   };
 
   const exportDataToCSV = () => {
-    alasql
-      .promise('SELECT * INTO CSV("output.csv", {headers:false}) FROM ?', [
-        data,
-      ])
-      .then(() => toast.success("Data downloaded as CSV!"))
-      .catch((err) => toast.error("Error saving data: ", err));
+    if (!data || data.length === 0) {
+      toast.error("No data to export");
+      return;
+    }
+
+    const columns = Object.keys(data[0]);
+
+    const escapeCsv = (value: unknown) => {
+      if (value === null || value === undefined || value === "NULL") return "";
+      let str = String(value);
+      // Escape double quotes by doubling them per RFC 4180
+      if (str.includes('"')) str = str.replace(/"/g, '""');
+      // Quote fields containing special characters
+      const mustQuote = /[",\n\r]/.test(str);
+      return mustQuote ? `"${str}"` : str;
+    };
+
+    const header = columns.map((c) => escapeCsv(c)).join(",");
+    const rows = data.map((row) =>
+      columns
+        .map((col) => escapeCsv((row as Record<string, unknown>)[col]))
+        .join(",")
+    );
+    const csvContent = [header, ...rows].join("\r\n");
+
+    // Prepend BOM for better compatibility with Excel on Windows
+    const bom = "\uFEFF";
+    const blob = new Blob([bom + csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "output.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast.success("Data downloaded as CSV!");
   };
 
   useEffect(() => {
