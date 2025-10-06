@@ -60,7 +60,7 @@ const ResultsDataTable = <TData, TValue>({
   const { setQuery, setData, query } = useAlasqlStore();
 
   return (
-    <div className="rounded-md border md:mb-0 h-fit max-h-fit md:max-h md:max-h-full w-full max-w-screen">
+    <div className="rounded-md border md:mb-0 md:max-h md:max-h-full w-full max-w-screen overflow-hidden">
       <div className="flex items-center justify-end">
         <ScrollArea className={"mr-auto whitespace-nowrap"}>
           <div className={"flex w-fit items-center"}>
