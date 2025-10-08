@@ -20,6 +20,11 @@ Hosted [here](https://csvql.vercel.app) on Vercel.
 - **Zustand** for state management
 - **react-ace** for the query editor
 
+## Previews
+
+![preview-light.png](assets%2Fpreview-light.png)
+![preview-dark.png](assets%2Fpreview-dark.png)
+
 ## Performance and Optimizations
 
 Here's the LightHouse results, the dip in Accessibility is because of `react-ace-editor`'s input fields not having associated labels.
@@ -44,8 +49,4 @@ The most impactful optimizations you could do to a website for load time would c
 
 [Walkthrough video](https://github.com/Yug34/csvql/raw/master/assets/screen-capture%20(5).webm)
 
-### Previews
-
-![preview-light.png](assets%2Fpreview-light.png)
-![preview-dark.png](assets%2Fpreview-dark.png)
 
